@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet Guardian AI</title>
+<style>
+:root{--t400:#1D9E75;--t50:#E1F5EE;--t600:#0F6E56;--t800:#085041;--a400:#EF9F27;--a50:#FAEEDA;--r400:#E24B4A;--r50:#FCEBEB;--p400:#7F77DD;--p50:#EEEDFE;--p800:#3C3489;--g50:#F7F6F3;--g100:#EDEDEB;--g300:#C8C7C2;--g500:#888780;--g700:#5F5E5A;--g900:#1A1A18;--bg:#0E1610;--bg2:#0A120C;--bg3:#111812;--bdr:#1A2B1D;--white:#fff;--fn:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fn);background:var(--bg);color:var(--g900);min-height:100vh;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:68px;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:6px;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.slogo{width:38px;height:38px;background:var(--t400);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.ni{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--g500);}
+.ni:hover{background:#1A2B1D;color:var(--t50);}
+.ni.on{background:var(--t800);color:var(--t50);}
+.ni svg{width:19px;height:19px;}
+.main{margin-left:68px;flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:0 22px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-title{font-size:15px;font-weight:600;color:var(--white);}
+.tb-sub{font-size:12px;color:var(--g500);}
+.tb-r{display:flex;align-items:center;gap:8px;}
+.bell{position:relative;width:34px;height:34px;border-radius:7px;background:rgba(226,74,74,.12);border:1px solid rgba(226,74,74,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.bdot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--r400);border-radius:50%;border:1.5px solid var(--bg2);}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--t400),var(--t600));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
+.cnt{padding:22px;flex:1;background:var(--bg3);}
+.jbar{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;}
+.jstep{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;position:relative;}
+.jstep::after{content:'';position:absolute;top:15px;left:calc(50% + 14px);width:calc(100% - 28px);height:1px;background:var(--bdr);}
+.jstep:last-child::after{display:none;}
+.sc{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:1.5px solid var(--bdr);background:var(--bg2);color:var(--g500);transition:all .2s;z-index:1;}
+.sc.done{background:var(--t800);border-color:var(--t400);color:var(--t50);}
+.sc.on{background:var(--t400);border-color:var(--t400);color:#fff;box-shadow:0 0 0 4px rgba(29,158,117,.2);}
+.sl{font-size:10px;color:var(--g500);text-align:center;font-weight:500;}
+.sl.on{color:var(--t50);}
+.sl.done{color:var(--t400);}
+.stage{display:none;animation:fi .22s ease;}
+.stage.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sh-ey{font-size:11px;font-weight:700;color:var(--t400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;}
+.sh-ti{font-size:20px;font-weight:600;color:var(--white);margin-bottom:3px;}
+.sh-de{font-size:13px;color:var(--g500);line-height:1.5;margin-bottom:16px;}
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:15px;margin-bottom:11px;}
+.ctit{font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:11px;}
+.card.danger{border-color:rgba(226,74,74,.3);background:rgba(252,235,235,.03);}
+.card.warn{border-color:rgba(239,159,39,.3);background:rgba(250,238,218,.03);}
+.card.suc{border-color:rgba(29,158,117,.3);background:rgba(225,245,238,.03);}
+.card.hl{border-color:var(--t400);border-width:1.5px;}
+.fst{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px;}
+.scard{background:var(--bg2);border:1px solid var(--bdr);border-radius:9px;padding:13px 15px;}
+.sn{font-size:26px;font-weight:700;color:var(--white);line-height:1;}
+.sn.d{color:var(--r400);}
+.sn.s{color:var(--t400);}
+.sn.w{color:var(--a400);}
+.sl2{font-size:12px;color:var(--g500);margin-top:3px;}
+.tl{display:flex;flex-direction:column;gap:7px;}
+.ti{background:#0E1610;border:1px solid var(--bdr);border-radius:9px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:border-color .15s;}
+.ti:hover{border-color:#2A3B2D;}
+.ti.crit{border-color:rgba(226,74,74,.4);background:rgba(252,235,235,.03);}
+.ti.crit:hover{border-color:var(--r400);}
+.hr{width:46px;height:46px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:2px solid;}
+.hr.g{border-color:var(--t400);background:rgba(29,158,117,.1);}
+.hr.w{border-color:var(--a400);background:rgba(239,159,39,.1);}
+.hr.b{border-color:var(--r400);background:rgba(226,74,74,.1);}
+.hn{font-size:15px;font-weight:700;line-height:1;}
+.hn.g{color:var(--t400);}
+.hn.w{color:var(--a400);}
+.hn.b{color:var(--r400);}
+.hl2{font-size:8px;color:var(--g500);text-transform:uppercase;margin-top:1px;}
+.tinfo{flex:1;min-width:0;}
+.tid{font-size:13px;font-weight:600;color:var(--white);}
+.tme{font-size:12px;color:var(--g500);margin-top:1px;}
+.tro{font-size:11px;color:var(--g700);margin-top:2px;}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+.badge.r{background:rgba(226,74,74,.15);color:#FF6B6B;border:1px solid rgba(226,74,74,.3);}
+.badge.a{background:rgba(239,159,39,.15);color:#FFC46B;border:1px solid rgba(239,159,39,.3);}
+.badge.g{background:rgba(29,158,117,.15);color:var(--t50);border:1px solid rgba(29,158,117,.3);}
+.badge.b{background:rgba(55,138,221,.15);color:#85B7EB;border:1px solid rgba(55,138,221,.3);}
+.badge.pu{background:rgba(127,119,221,.15);color:#AFA9EC;border:1px solid rgba(127,119,221,.3);}
+.badge.gr{background:rgba(136,135,128,.15);color:var(--g300);border:1px solid rgba(136,135,128,.2);}
+.aib{background:rgba(127,119,221,.08);border:1px solid rgba(127,119,221,.25);border-radius:9px;padding:13px;margin-bottom:11px;}
+.ail{font-size:10px;font-weight:700;color:var(--p400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:4px;}
+.ait{font-size:13px;color:#D0CCF4;line-height:1.6;}
+.ait strong{color:var(--white);font-weight:600;}
+.sigs{display:flex;flex-direction:column;gap:9px;}
+.sigr{display:flex;align-items:center;gap:9px;}
+.sign{font-size:12px;color:var(--g300);width:155px;flex-shrink:0;}
+.sigt{flex:1;height:5px;background:#1A2B1D;border-radius:3px;overflow:hidden;}
+.sigf{height:100%;border-radius:3px;}
+.sigf.b{background:var(--r400);}
+.sigf.w{background:var(--a400);}
+.sigf.k{background:var(--t400);}
+.sigv{font-size:12px;font-weight:600;width:185px;text-align:right;flex-shrink:0;}
+.sigv.b{color:#FF6B6B;}
+.sigv.w{color:#FFC46B;}
+.rp{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.rc{border-radius:9px;padding:13px;text-align:center;}
+.rc.b{background:rgba(226,74,74,.1);border:1px solid rgba(226,74,74,.25);}
+.rc.g{background:rgba(29,158,117,.1);border:1px solid rgba(29,158,117,.25);}
+.ra{font-size:24px;font-weight:700;line-height:1;margin-bottom:3px;}
+.rc.b .ra{color:#FF6B6B;}
+.rc.g .ra{color:var(--t400);}
+.rd{font-size:11px;color:var(--g500);line-height:1.3;}
+.cfr{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g500);}
+.cfb{flex:1;height:4px;background:#1A2B1D;border-radius:2px;overflow:hidden;}
+.cff{height:100%;background:var(--p400);border-radius:2px;}
+.aopts{display:flex;flex-direction:column;gap:7px;margin-bottom:11px;}
+.ao{border:1.5px solid var(--bdr);border-radius:9px;padding:13px;cursor:pointer;transition:all .15s;}
+.ao:hover{border-color:#2A3B2D;background:rgba(255,255,255,.02);}
+.ao.rec{border-color:var(--t400);background:rgba(29,158,117,.06);}
+.ao.rsk{border-color:rgba(239,159,39,.4);}
+.ao.mon{border-color:rgba(136,135,128,.3);}
+.ao.dim{opacity:.45;}
+.ao-hd{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.ao-ti{font-size:14px;font-weight:600;color:var(--white);}
+.ao-de{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px;}
+.adi{font-size:11px;}
+.adi span:first-child{color:var(--g500);}
+.adi span:last-child{color:var(--g300);font-weight:500;}
+.elog{display:flex;flex-direction:column;gap:0;}
+.ei{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--bdr);}
+.ei:last-child{border-bottom:none;}
+.etm{font-size:11px;color:var(--g500);width:40px;flex-shrink:0;padding-top:2px;font-family:monospace;}
+.eb{flex:1;}
+.eti{font-size:13px;font-weight:500;color:var(--white);margin-bottom:2px;}
+.es{font-size:12px;color:var(--g500);line-height:1.4;}
+.eic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.eic.g{background:rgba(29,158,117,.15);}
+.eic.b2{background:rgba(55,138,221,.15);}
+.eic.p{background:rgba(127,119,221,.15);}
+.og{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px;}
+.oc{border-radius:9px;padding:13px;text-align:center;background:#0E1610;border:1px solid var(--bdr);}
+.on2{font-size:21px;font-weight:700;color:var(--white);line-height:1;}
+.on2.g{color:var(--t400);}
+.on2.r{color:var(--r400);}
+.on2.a{color:var(--a400);}
+.ol{font-size:11px;color:var(--g500);margin-top:3px;line-height:1.3;}
+.ll{display:flex;flex-direction:column;gap:7px;}
+.li{display:flex;gap:9px;align-items:flex-start;padding:9px;background:rgba(29,158,117,.06);border:1px solid rgba(29,158,117,.15);border-radius:5px;}
+.lic{color:var(--t400);font-size:15px;flex-shrink:0;margin-top:1px;}
+.lib{font-size:12px;color:var(--g300);line-height:1.5;}
+.lib strong{color:var(--white);font-weight:600;}
+.dr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdr);}
+.dr:last-child{border-bottom:none;}
+.dk{font-size:12px;color:var(--g500);}
+.dv{font-size:12px;font-weight:600;color:var(--g300);}
+.dv.g{color:var(--t400);}
+.dv.a{color:#FFC46B;}
+.dv.r{color:#FF6B6B;}
+.br{display:flex;gap:7px;margin-top:15px;}
+.btn{flex:1;padding:11px 15px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:var(--fn);}
+.btn.p{background:var(--t400);color:#fff;}
+.btn.p:hover{background:var(--t600);}
+.btn.s{background:#1A2B1D;color:var(--g300);border:1px solid #2A3B2D;}
+.btn.s:hover{background:#233025;}
+.btn.gh{background:transparent;color:var(--g500);border:1px solid #2A3B2D;}
+.btn.gh:hover{color:var(--g300);border-color:var(--g500);}
+.ovb{background:rgba(239,159,39,.06);border:1px solid rgba(239,159,39,.2);border-radius:5px;padding:9px 11px;margin-top:11px;}
+.ovl{font-size:11px;font-weight:600;color:#FFC46B;margin-bottom:3px;}
+.ovt{font-size:11px;color:rgba(255,196,107,.65);line-height:1.5;}
+.tc{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.map{background:#0E1610;border:1px solid var(--bdr);border-radius:9px;height:110px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:11px;}
+.mrd{position:absolute;top:50%;left:0;right:0;height:2px;background:#1A2B1D;transform:translateY(-50%);}
+.mrd::after{content:'';position:absolute;top:-1px;left:0;right:0;height:4px;border-top:2px dashed #2A3B2D;}
+.tp{position:absolute;left:33%;top:50%;transform:translate(-50%,-50%);background:var(--a400);border-radius:50%;width:11px;height:11px;border:2px solid #fff;}
+.wp{position:absolute;left:53%;top:50%;transform:translate(-50%,-50%);background:var(--t400);border-radius:3px;width:11px;height:11px;border:2px solid #fff;}
+.dp{position:absolute;right:9%;top:50%;transform:translate(0,-50%);background:var(--r400);border-radius:50%;width:9px;height:9px;border:2px solid #fff;}
+.ml{position:absolute;font-size:10px;color:var(--g500);}
+.modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;overflow-y:auto;padding:36px 18px;}
+.modal{max-width:600px;margin:0 auto;background:var(--bg2);border:1px solid var(--bdr);border-radius:20px;overflow:hidden;}
+.mhd{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;}
+.mbdy{padding:18px 22px;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#2A3B2D;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="slogo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div class="ni on" title="Fleet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+  <div class="ni" title="Trucks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+  <div class="ni" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+  <div class="ni" title="Analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+  <div class="ni" title="Settings" style="margin-top:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left" style="display:flex;align-items:center;gap:11px;">
+      <div><div class="tb-title">Fleet Guardian AI</div><div class="tb-sub">Rajan Transport · 10 trucks · 7 active</div></div>
+    </div>
+    <div class="tb-r">
+      <div class="bell" onclick="goTo(0)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="bdot"></div>
+      </div>
+      <div class="av">RJ</div>
+    </div>
+  </div>
+  <div class="cnt">
+    <div class="jbar">
+      <div class="jstep" onclick="goTo(0)"><div class="sc on" id="sc0">1</div><div class="sl on" id="sl0">Signal</div></div>
+      <div class="jstep" onclick="goTo(1)"><div class="sc" id="sc1">2</div><div class="sl" id="sl1">Insight</div></div>
+      <div class="jstep" onclick="goTo(2)"><div class="sc" id="sc2">3</div><div class="sl" id="sl2">Decision</div></div>
+      <div class="jstep" onclick="goTo(3)"><div class="sc" id="sc3">4</div><div class="sl" id="sl3">Action</div></div>
+      <div class="jstep" onclick="goTo(4)"><div class="sc" id="sc4">5</div><div class="sl" id="sl4">Confirm</div></div>
+      <div class="jstep" onclick="goTo(5)"><div class="sc" id="sc5">6</div><div class="sl" id="sl5">Learning</div></div>
+    </div>
+
+    <!-- S0 SIGNAL -->
+    <div class="stage on" id="s0">
+      <div class="sh-ey">Stage 1 · Signal detection</div>
+      <div class="sh-ti">Fleet health — right now</div>
+      <div class="sh-de">AI health scoring running across all trucks. One just crossed the critical threshold.</div>
+      <div class="fst">
+        <div class="scard"><div class="sn">10</div><div class="sl2">Total trucks</div></div>
+        <div class="scard"><div class="sn s">8</div><div class="sl2">Healthy</div></div>
+        <div class="scard"><div class="sn w">1</div><div class="sl2">Watch</div></div>
+        <div class="scard"><div class="sn d">1</div><div class="sl2">Act now</div></div>
+      </div>
+      <div class="card">
+        <div class="ctit">All trucks · live health scores</div>
+        <div class="tl">
+          <div class="ti crit" onclick="goTo(1)">
+            <div class="hr b"><div class="hn b">38</div><div class="hl2">health</div></div>
+            <div class="tinfo">
+              <div class="tid">TN09 AB 1234 <span style="font-size:11px;color:#888;font-weight:400">· Tata LPT 2518</span></div>
+              <div class="tme">Driver: Ramesh Kumar · Mumbai → Pune</div>
+              <div class="tro">68 km remaining · NH48 · Near Khopoli</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+              <span class="badge r">Act now</span>
+              <span style="font-size:11px;color:var(--g500)">↓ from 71</span>
+            </div>
+          </div>
+          <div class="ti">
+            <div class="hr w"><div class="hn w">54</div><div class="hl2">health</div></div>
+            <div class="tinfo"><div class="tid">MH04 GH 3344</div><div class="tme">Driver: Suresh Patil · Pune → Nashik</div></div>
+            <span class="badge a">Watch</span>
+          </div>
+          <div class="ti">
+            <div class="hr g"><div class="hn g">84</div><div class="hl2">health</div></div>
+            <div class="tinfo"><div class="tid">MH04 CD 5678</div><div class="tme">Driver: Arun Desai · Mumbai → Bengaluru</div></div>
+            <span class="badge g">Good</span>
+          </div>
+          <div class="ti">
+            <div class="hr g"><div class="hn g">91</div><div class="hl2">health</div></div>
+            <div class="tinfo"><div class="tid">KA03 EF 9012</div><div class="tme">Idle · Yard · Bengaluru</div></div>
+            <span class="badge g">Good</span>
+          </div>
+          <div style="padding:9px 0;font-size:12px;color:var(--g500);text-align:center">+ 6 more trucks · all healthy (82–93)</div>
+        </div>
+      </div>
+      <div class="aib">
+        <div class="ail">★ Fleet Guardian AI · alert</div>
+        <div class="ait"><strong>TN09 AB 1234</strong> health score dropped 71→38 in 15 mins. LSTM detecting engine cooling degradation. Truck is mid-trip on NH48 — 68 km from Pune. <strong>Review now.</strong></div>
+      </div>
+      <div class="br">
+        <button class="btn p" onclick="goTo(1)">Review alert →</button>
+        <button class="btn gh">Snooze 30 min</button>
+      </div>
+    </div>
+
+    <!-- S1 INSIGHT -->
+    <div class="stage" id="s1">
+      <div class="sh-ey">Stage 2 · AI insight</div>
+      <div class="sh-ti">TN09 AB 1234 — what AI found</div>
+      <div class="sh-de">Plain-language analysis of what the signals mean and what it costs if ignored.</div>
+      <div class="aib">
+        <div class="ail">★ Fleet Guardian AI · diagnosis</div>
+        <div class="ait">Engine cooling system showing early degradation. Based on 6 hours of signals, this truck has a <strong>72% probability of breakdown</strong> before reaching Pune — likely in the Khalapur ghat section. Estimated time to failure: <strong>4–8 hours.</strong> Confident based on 847 similar events in fleet history.</div>
+      </div>
+      <div class="card">
+        <div class="ctit">Why AI flagged this — top 3 signals</div>
+        <div class="sigs">
+          <div class="sigr"><div class="sign">Engine temp trend</div><div class="sigt"><div class="sigf b" style="width:85%"></div></div><div class="sigv b">+18% above truck's baseline</div></div>
+          <div class="sigr"><div class="sign">Coolant pressure</div><div class="sigt"><div class="sigf b" style="width:75%"></div></div><div class="sigv b">Dropping — 3hr trend</div></div>
+          <div class="sigr"><div class="sign">RPM variance</div><div class="sigt"><div class="sigf w" style="width:60%"></div></div><div class="sigv w">Irregular since 11:20 AM</div></div>
+        </div>
+      </div>
+      <div class="rp">
+        <div class="rc b"><div class="ra">₹34,000</div><div class="rd">Est. cost if breakdown occurs<br>(repair + lost trip days)</div></div>
+        <div class="rc g"><div class="ra">₹3,800</div><div class="rd">Cost to service<br>preventively now</div></div>
+      </div>
+      <div class="cfr"><span>Confidence</span><div class="cfb"><div class="cff" style="width:78%"></div></div><span style="color:var(--g300);font-weight:600">78%</span><span>· 847 events</span></div>
+      <div class="card" style="margin-top:11px">
+        <div class="ctit">Live location · NH48</div>
+        <div class="map">
+          <div class="mrd"></div>
+          <div class="tp"></div><div class="wp"></div><div class="dp"></div>
+          <span class="ml" style="left:27%;top:28%">TN09 AB 1234</span>
+          <span class="ml" style="left:46%;top:28%;color:var(--t400)">Sharma Auto</span>
+          <span class="ml" style="right:4%;top:28%;color:#FF6B6B">Pune</span>
+          <span class="ml" style="left:8%;bottom:10%;font-size:9px;color:#555">Khopoli 12km →</span>
+          <span class="ml" style="right:4%;bottom:10%;font-size:9px;color:#555">← 68km</span>
+        </div>
+        <div style="display:flex;gap:11px;font-size:11px;color:var(--g500)">
+          <span style="color:#FFC46B">● Truck</span>
+          <span style="color:var(--t400)">■ Workshop</span>
+          <span style="color:#FF6B6B">● Pune</span>
+        </div>
+      </div>
+      <div class="br">
+        <button class="btn p" onclick="goTo(2)">See recommended actions →</button>
+        <button class="btn s" onclick="goTo(0)">← Back</button>
+      </div>
+    </div>
+
+    <!-- S2 DECISION -->
+    <div class="stage" id="s2">
+      <div class="sh-ey">Stage 3 · Decision</div>
+      <div class="sh-ti">What do you want to do?</div>
+      <div class="sh-de">AI has ranked your options with consequences quantified. You decide — all choices are logged.</div>
+      <div class="aib">
+        <div class="ail">★ AI recommendation</div>
+        <div class="ait">Stop at <strong>Sharma Auto, Khopoli</strong> (12 km ahead). They can inspect and fix today. Your next trip on this truck is Thursday — 2-day buffer. Doing nothing risks breakdown in the Khalapur ghat section, where recovery takes 2× longer.</div>
+      </div>
+      <div class="aopts">
+        <div class="ao rec" onclick="selAct(0,this)">
+          <div class="ao-hd"><span class="badge g">Recommended</span><div class="ao-ti">Stop for service now — Khopoli</div></div>
+          <div class="ao-de">
+            <div class="adi"><span>Workshop</span><br><span>Sharma Auto (12 km)</span></div>
+            <div class="adi"><span>Turnaround</span><br><span>3–4 hours</span></div>
+            <div class="adi"><span>Est. cost</span><br><span style="color:var(--t400)">₹3,800</span></div>
+            <div class="adi"><span>Trip delay</span><br><span style="color:#FFC46B">~4 hours</span></div>
+            <div class="adi"><span>Next trip</span><br><span style="color:var(--t400)">Thu buffer OK ✓</span></div>
+            <div class="adi"><span>Revenue protected</span><br><span style="color:var(--t400)">~₹29,800</span></div>
+          </div>
+        </div>
+        <div class="ao rsk" onclick="selAct(1,this)">
+          <div class="ao-hd"><span class="badge a">Risky</span><div class="ao-ti">Complete trip, service at Pune</div></div>
+          <div style="font-size:12px;color:rgba(255,196,107,.7)">72% probability of breakdown before arrival. If breakdown in Khalapur ghat: +2 days recovery, ₹34,000 total cost.</div>
+        </div>
+        <div class="ao mon" onclick="selAct(2,this)">
+          <div class="ao-hd"><span class="badge gr">Monitor</span><div class="ao-ti">Keep going, re-alert in 30 minutes</div></div>
+          <div style="font-size:12px;color:var(--g500)">AI will continue monitoring and alert again if health score drops further.</div>
+        </div>
+      </div>
+      <div class="ovb">
+        <div class="ovl">⟲ You can always override</div>
+        <div class="ovt">If you know something the AI doesn't — load urgency, driver feedback — choose any option. Your decision improves future recommendations.</div>
+      </div>
+      <div class="br">
+        <button class="btn p" onclick="goTo(3)" id="abtn">Approve recommended action →</button>
+        <button class="btn s" onclick="goTo(1)">← Back</button>
+      </div>
+    </div>
+
+    <!-- S3 ACTION -->
+    <div class="stage" id="s3">
+      <div class="sh-ey">Stage 4 · Action execution</div>
+      <div class="sh-ti">3 actions firing in parallel</div>
+      <div class="sh-de">Driver, shipper, and workshop notified simultaneously on your approval.</div>
+      <div class="card suc">
+        <div class="ctit" style="color:var(--t400)">Execution log · 12:47 PM</div>
+        <div class="elog">
+          <div class="ei">
+            <div class="eic g">🗺️</div>
+            <div class="eb"><div class="etm">12:47</div><div class="eti">Driver notified — Ramesh Kumar</div><div class="es">WhatsApp: "Stop at Sharma Auto Khopoli for service. Location shared. Slot confirmed 1:15 PM."</div></div>
+            <span class="badge g">Sent</span>
+          </div>
+          <div class="ei">
+            <div class="eic b2">📦</div>
+            <div class="eb"><div class="etm">12:47</div><div class="eti">Shipper notified — Rajan Logistics</div><div class="es">"TN09 AB 1234 delayed ~4 hrs. New ETA: 6:30 PM. Precautionary maintenance stop." (Pre-approved template)</div></div>
+            <span class="badge g">Sent</span>
+          </div>
+          <div class="ei">
+            <div class="eic p">🔧</div>
+            <div class="eb"><div class="etm">12:48</div><div class="eti">Workshop confirmed — Sharma Auto</div><div class="es">Slot confirmed 1:15 PM. Ref #SH2847. Turnaround: 3–4 hours.</div></div>
+            <span class="badge g">Confirmed</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctit">Live status · TN09 AB 1234</div>
+        <div class="dr"><div class="dk">Location</div><div class="dv">NH48 · 8 km from Khopoli</div></div>
+        <div class="dr"><div class="dk">Driver status</div><div class="dv g">Confirmed stop ✓</div></div>
+        <div class="dr"><div class="dk">Health score</div><div class="dv r">38 · monitoring</div></div>
+        <div class="dr"><div class="dk">ETA to workshop</div><div class="dv">~12 minutes</div></div>
+        <div class="dr"><div class="dk">Shipper updated?</div><div class="dv g">Yes · auto-notified ✓</div></div>
+      </div>
+      <div class="card warn" style="font-size:12px;color:rgba(255,196,107,.8)">
+        <strong style="color:#FFC46B">Tier 2 autonomy:</strong> Shipper message sent automatically using your pre-approved template. Financial decisions still need your approval. <span style="color:var(--t400);cursor:pointer">View message ›</span>
+      </div>
+      <div class="br">
+        <button class="btn p" onclick="goTo(4)">Mark service complete →</button>
+        <button class="btn s" onclick="goTo(2)">← Back</button>
+      </div>
+    </div>
+
+    <!-- S4 CONFIRM -->
+    <div class="stage" id="s4">
+      <div class="sh-ey">Stage 5 · Confirmation & close</div>
+      <div class="sh-ti">Service complete — truck back on road</div>
+      <div class="sh-de">Outcome logged. Revenue protected. Shipper updated automatically.</div>
+      <div class="aib">
+        <div class="ail">★ Fleet Guardian AI · outcome</div>
+        <div class="ait">Thermostat and coolant hose replaced at Sharma Auto. Health score recovered to <strong>82</strong>. Truck departed Khopoli 4:10 PM. ETA Pune: <strong>6:25 PM</strong> — 5 mins ahead of updated schedule.</div>
+      </div>
+      <div class="og">
+        <div class="oc"><div class="on2 g">₹29,800</div><div class="ol">Revenue protected</div></div>
+        <div class="oc"><div class="on2">₹4,200</div><div class="ol">Repair cost</div></div>
+        <div class="oc"><div class="on2 a">3h 55m</div><div class="ol">Delay to shipper</div></div>
+      </div>
+      <div class="card">
+        <div class="ctit">Trip close summary</div>
+        <div class="dr"><div class="dk">Breakdown avoided?</div><div class="dv g">Yes — 72% risk averted ✓</div></div>
+        <div class="dr"><div class="dk">Health score now</div><div class="dv g">82 · Healthy</div></div>
+        <div class="dr"><div class="dk">Next trip clearance</div><div class="dv g">Cleared for Thursday ✓</div></div>
+        <div class="dr"><div class="dk">Shipper auto-update</div><div class="dv g">Sent 4:12 PM ✓</div></div>
+        <div class="dr"><div class="dk">Audit log</div><div class="dv">Saved · 90-day retention</div></div>
+      </div>
+      <div class="card suc">
+        <div class="ctit" style="color:var(--t400)">Shipper notification — auto-sent</div>
+        <div style="font-size:13px;color:var(--g300);font-style:italic;line-height:1.6;padding:8px;background:#0A120C;border-radius:5px">"Truck TN09 AB 1234 back on road. ETA Pune 6:25 PM. Maintenance complete, all systems checked."</div>
+        <div style="font-size:11px;color:var(--g500);margin-top:5px">Sent 4:12 PM · Tier 2 auto-send · Template #3</div>
+      </div>
+      <div class="br">
+        <button class="btn p" onclick="goTo(5)">See what AI learned →</button>
+        <button class="btn s" onclick="goTo(3)">← Back</button>
+      </div>
+    </div>
+
+    <!-- S5 LEARNING -->
+    <div class="stage" id="s5">
+      <div class="sh-ey">Stage 6 · Follow-up & learning</div>
+      <div class="sh-ti">Fleet Guardian AI improved</div>
+      <div class="sh-de">Every confirmed event trains the model. Your fleet gets smarter each month.</div>
+      <div class="aib">
+        <div class="ail">★ What the AI learned from this event</div>
+        <div class="ait">Thermostat failure on Tata LPT at 1.8L km added to fleet failure history. Coolant + RPM variance pattern confirmed as reliable pre-failure signal. <strong>Future alerts for this pattern will trigger 2 hours earlier.</strong></div>
+      </div>
+      <div class="card">
+        <div class="ctit">3 model improvements applied</div>
+        <div class="ll">
+          <div class="li"><div class="lic">+</div><div class="lib"><strong>Failure event labelled</strong> — coolant + RPM pattern added to LSTM training set with confirmed ground truth. Next detection on similar pattern: 2 hrs earlier.</div></div>
+          <div class="li"><div class="lic">+</div><div class="lib"><strong>Sharma Auto stored</strong> — confirmed turnaround 3h 40m, cost ₹4,200, parts available. Will surface first for future cooling issues on NH48.</div></div>
+          <div class="li"><div class="lic">+</div><div class="lib"><strong>Khalapur ghat tagged</strong> — 2× stress multiplier for overheating risk in summer. All fleet trucks on this corridor get earlier alerts.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctit">Next actions — TN09 AB 1234</div>
+        <div class="dr"><div class="dk">Schedule service</div><div class="dv">Full check at 8,000 km</div></div>
+        <div class="dr"><div class="dk">Watch signal</div><div class="dv a">Belt wear — minor flag</div></div>
+        <div class="dr"><div class="dk">Next trip risk</div><div class="dv g">Low · cleared for Thu ✓</div></div>
+      </div>
+      <div class="tc">
+        <div style="background:var(--bg2);border:1px solid rgba(29,158,117,.25);border-radius:9px;padding:13px;text-align:center"><div style="font-size:24px;font-weight:700;color:var(--t400)">₹29,800</div><div style="font-size:11px;color:var(--g500);margin-top:3px">Saved this event</div></div>
+        <div style="background:var(--bg2);border:1px solid rgba(29,158,117,.25);border-radius:9px;padding:13px;text-align:center"><div style="font-size:24px;font-weight:700;color:var(--t400)">1st</div><div style="font-size:11px;color:var(--g500);margin-top:3px">Prevented breakdown this month</div></div>
+      </div>
+      <div class="br">
+        <button class="btn s" onclick="goTo(0)">← Fleet overview</button>
+        <button class="btn p" onclick="showM()">View June performance →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- Monthly Modal -->
+<div class="modal-wrap" id="mw" onclick="if(event.target===this)hideM()">
+  <div class="modal">
+    <div class="mhd">
+      <div><div style="font-size:11px;color:var(--t400);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">Fleet Guardian AI</div><div style="font-size:17px;font-weight:600;color:#fff">June 2025 — fleet performance</div></div>
+      <button onclick="hideM()" style="background:none;border:none;color:var(--g500);cursor:pointer;font-size:19px;padding:3px">✕</button>
+    </div>
+    <div class="mbdy">
+      <div class="aib" style="margin-bottom:14px">
+        <div class="ail">★ Monthly summary</div>
+        <div class="ait">Your fleet avoided <strong>3 breakdowns</strong> this month, saving an estimated <strong>₹94,000</strong>. Fleet uptime improved from 81% to 91%. One dismissed alert led to an avoidable breakdown — ₹22,000 cost.</div>
+      </div>
+      <div class="fst" style="grid-template-columns:repeat(2,1fr)">
+        <div class="scard"><div class="sn s">₹94K</div><div class="sl2">Revenue protected</div></div>
+        <div class="scard"><div class="sn s">3</div><div class="sl2">Breakdowns prevented</div></div>
+        <div class="scard"><div class="sn s">91%</div><div class="sl2">Fleet uptime ↑</div></div>
+        <div class="scard"><div class="sn w">1</div><div class="sl2">Breakdown (dismissed)</div></div>
+      </div>
+      <div class="card" style="margin-top:11px">
+        <div class="ctit">Alert accuracy</div>
+        <div class="dr"><div class="dk">Alerts acted on</div><div class="dv g">9/9 — all accurate</div></div>
+        <div class="dr"><div class="dk">Dismissed alerts</div><div class="dv r">1 — led to breakdown</div></div>
+        <div class="dr"><div class="dk">False positives</div><div class="dv g">0</div></div>
+        <div class="dr"><div class="dk">Avg confidence</div><div class="dv">78%</div></div>
+        <div class="dr"><div class="dk">New training events</div><div class="dv g">+12</div></div>
+      </div>
+      <div style="margin-top:14px;padding:13px;background:rgba(239,159,39,.08);border:1px solid rgba(239,159,39,.25);border-radius:9px">
+        <div style="font-size:12px;font-weight:600;color:#FFC46B;margin-bottom:5px">The one breakdown that happened</div>
+        <div style="font-size:12px;color:rgba(255,196,107,.65);line-height:1.6">MH04 GH 3344 — brake pad alert June 8 dismissed. Breakdown June 14 on Solapur highway. ₹22,000 repair + 2 days idle. AI was correct at 81% confidence.</div>
+      </div>
+      <div class="br" style="margin-top:14px">
+        <button class="btn p" onclick="hideM()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var cur=0,selA=0;
+function goTo(n){
+  document.getElementById('s'+cur).classList.remove('on');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('on');
+  upNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function upNav(){
+  for(var i=0;i<6;i++){
+    var c=document.getElementById('sc'+i),l=document.getElementById('sl'+i);
+    c.className='sc';l.className='sl';
+    if(i<cur){c.classList.add('done');l.classList.add('done');}
+    else if(i===cur){c.classList.add('on');l.classList.add('on');}
+  }
+}
+function selAct(n,el){
+  selA=n;
+  document.querySelectorAll('.ao').forEach(function(o,i){o.classList.toggle('dim',i!==n);});
+  var lbl=['Approve recommended action →','Proceed despite risk →','Keep monitoring →'];
+  document.getElementById('abtn').textContent=lbl[n];
+}
+function showM(){document.getElementById('mw').style.display='block';}
+function hideM(){document.getElementById('mw').style.display='none';}
+</script>
+</body>
+</html>
