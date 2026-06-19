@@ -3,8 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Funnel Optimization — Ankita Maiti</title>
+  <title>Electronics Funnel Optimization — Ankita Maiti</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .funnel-steps { display: flex; align-items: center; gap: 0; margin: 24px 0; flex-wrap: wrap; }
+    .funnel-step { display: flex; align-items: center; gap: 0; }
+    .funnel-box {
+      padding: 10px 18px; font-size: 13px; font-weight: 600;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 6px; white-space: nowrap;
+    }
+    .funnel-box.drop { background: #fcebeb; border-color: #f0c8c8; color: #c62828; }
+    .funnel-arrow { font-size: 16px; color: var(--muted); padding: 0 6px; }
+
+    .intervention-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 32px; margin-bottom: 24px;
+    }
+    .intervention-num { font-family: var(--serif); font-size: 13px; color: var(--orange); font-weight: 700; margin-bottom: 8px; }
+    .intervention-title { font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .intervention-subtitle { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
+    .intervention-body { font-size: 15px; line-height: 1.8; color: #444440; }
+    .intervention-body p { margin-bottom: 14px; }
+    .intervention-body p:last-child { margin-bottom: 0; }
+    .intervention-result {
+      display: flex; align-items: center; gap: 16px;
+      margin-top: 20px; padding: 16px 20px;
+      background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 10px;
+    }
+    .ir-num { font-family: var(--serif); font-size: 28px; font-weight: 700; color: #2e7d32; flex-shrink: 0; }
+    .ir-label { font-size: 14px; color: #2e7d32; line-height: 1.4; }
+
+    .design-decision { background: var(--orange-light); border-left: 3px solid var(--orange); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0; }
+    .dd-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+    .dd-text { font-size: 14px; color: #3a3a36; line-height: 1.6; margin: 0; }
+
+    .conversion-bar { margin: 20px 0; }
+    .cb-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .cb-label { font-size: 13px; color: var(--muted); width: 80px; flex-shrink: 0; }
+    .cb-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .cb-fill { height: 100%; border-radius: 4px; }
+    .cb-fill.before { background: #e24b4a; }
+    .cb-fill.after { background: #2e7d32; }
+    .cb-val { font-size: 13px; font-weight: 700; width: 40px; flex-shrink: 0; }
+    .cb-val.before { color: #e24b4a; }
+    .cb-val.after { color: #2e7d32; }
+
+    .infra-flow { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+    .infra-step { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; line-height: 1.5; }
+    .infra-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 24px 0; }
+    .rg-cell { background: var(--bg-card); padding: 24px 20px; }
+    .rg-val { font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--orange); }
+    .rg-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+  </style>
 </head>
 <body>
 
@@ -17,6 +70,7 @@
   </div>
 </nav>
 
+<!-- HERO -->
 <div class="cs-hero">
   <a href="index.html" class="cs-back">← Back to all work</a>
   <div class="cs-meta">
@@ -25,129 +79,354 @@
     <span class="tag">CRO</span>
     <span class="tag">Consumer Commerce</span>
   </div>
-  <h1 class="cs-title">Funnel Optimization —<br><em>Electronics</em></h1>
-  <p class="cs-subtitle">Tata Digital · Tata Neu · 2022</p>
+  <h1 class="cs-title">Electronics Funnel<br><em>Optimization</em></h1>
+  <p class="cs-subtitle">Tata Digital · Tata Neu · FY24–25</p>
 
   <div class="cs-metrics">
     <div class="cs-metric">
-      <div class="cs-metric-val">[X]%</div>
-      <div class="cs-metric-label">Conversion Rate Improvement</div>
+      <div class="cs-metric-val">21%→28%</div>
+      <div class="cs-metric-label">PDP-to-Cart Conversion</div>
     </div>
     <div class="cs-metric">
-      <div class="cs-metric-val">[X]pp</div>
-      <div class="cs-metric-label">Drop-off Reduction (PDP→Cart)</div>
+      <div class="cs-metric-val">+15%</div>
+      <div class="cs-metric-label">New User Transactions</div>
     </div>
     <div class="cs-metric">
-      <div class="cs-metric-val">₹[X]Cr</div>
-      <div class="cs-metric-label">Revenue Impact</div>
+      <div class="cs-metric-val">+10%</div>
+      <div class="cs-metric-label">AOV Lift</div>
     </div>
     <div class="cs-metric">
-      <div class="cs-metric-val">[X]%</div>
-      <div class="cs-metric-label">Electronics GMV via EMI</div>
+      <div class="cs-metric-val">+10%</div>
+      <div class="cs-metric-label">User Retention</div>
     </div>
   </div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
   <div class="tab-list">
     <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
-    <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('diagnosis', this)">Diagnosis</button>
+    <button class="tab-btn" onclick="switchTab('interventions', this)">4 Interventions</button>
     <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
     <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
-    <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
   </div>
 </div>
 
+<!-- OVERVIEW -->
 <div class="tab-panel active" id="tab-overview">
   <div class="cs-section">
-    <div class="cs-section-label">The Problem</div>
+    <div class="cs-section-label">Context</div>
     <p>
-      The Electronics category on Tata Neu was underperforming relative to its traffic share.
-      Users were browsing but not buying — the category had [X]% higher drop-off at the product
-      detail page (PDP) than the platform average, and cart abandonment was [X]pp above benchmark.
+      Tata Neu was an early-stage super-app competing in a market where Flipkart and Amazon had
+      already built deep user trust and habitual buying behaviour. Electronics was our highest GMV
+      category — roughly <strong>60–65% of total platform GMV</strong> — which made it both our
+      biggest opportunity and our most exposed battleground against established players.
     </p>
     <p>
-      Electronics is inherently a considered purchase — long research cycles, high comparison
-      behaviour, trust-sensitive. The challenge was to reduce friction without oversimplifying
-      a category where users want information, not just speed.
+      FY23–24 data told a clear story: traffic and new user acquisition were working, but we had
+      two structural gaps. Conversion wasn't keeping pace with traffic growth, and our repeat rate
+      was around <strong>23%</strong> — well below the 40–50% that mature platforms were seeing.
+      Users were coming in, browsing electronics, and buying elsewhere — on platforms they'd trusted for years.
     </p>
     <div class="callout">
-      <div class="callout-label">Key Insight</div>
-      <p>[X]% of PDP visitors did not add to cart. User interviews revealed three recurring themes: inability to compare specs, EMI options buried, and trust signals (warranty, returns) not visible.</p>
+      <div class="callout-label">The Mandate</div>
+      <p>Going into FY24–25, I owned the Electronics funnel roadmap — with a mandate to improve conversion, grow new user transactions, and start building a repeat purchase habit.</p>
     </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">The Funnel</div>
+    <div class="funnel-steps">
+      <div class="funnel-step"><div class="funnel-box">Category Listing</div><div class="funnel-arrow">→</div></div>
+      <div class="funnel-step"><div class="funnel-box">PDP</div><div class="funnel-arrow">→</div></div>
+      <div class="funnel-step"><div class="funnel-box drop">PDP → Cart ← biggest drop</div><div class="funnel-arrow">→</div></div>
+      <div class="funnel-step"><div class="funnel-box">Cart</div><div class="funnel-arrow">→</div></div>
+      <div class="funnel-step"><div class="funnel-box">Checkout</div></div>
+    </div>
+    <p>
+      PDP-to-cart had the biggest leakage by far — sitting at <strong>21%</strong> conversion.
+      But "PDP drop-off" isn't a diagnosis, it's a symptom. The real work was going deeper.
+    </p>
   </div>
 
   <div class="cs-section">
     <div class="cs-section-label">My Role</div>
     <ul>
-      <li>Led the full funnel diagnostic from traffic → purchase</li>
-      <li>Prioritized hypotheses and designed the intervention roadmap</li>
-      <li>Worked with design and engineering on PDP and checkout improvements</li>
-      <li>Defined and tracked success metrics post-launch</li>
+      <li>Owned the Electronics funnel roadmap end-to-end for FY24–25</li>
+      <li>Led full funnel diagnostic — built the data story from traffic to purchase</li>
+      <li>Defined and prioritized 4 sequential interventions across conversion, AOV, acquisition, and retention</li>
+      <li>Drove cross-functional execution with personalization, engineering, and platform teams</li>
+      <li>Solved a platform-wide infrastructure gap for new user offer management</li>
     </ul>
   </div>
+</div>
+
+<!-- DIAGNOSIS -->
+<div class="tab-panel" id="tab-diagnosis">
+  <div class="cs-section">
+    <div class="cs-section-label">The Diagnosis</div>
+    <p>
+      I started by mapping the full funnel and measuring drop-off at each step. PDP-to-cart had
+      the biggest leakage. But I didn't stop there — I segmented PDP exits by price band.
+    </p>
+    <p>
+      A clear pattern emerged: <strong>higher-priced SKUs were converting significantly worse
+      than lower-priced ones.</strong> That ruled out UX friction as the primary cause — if it
+      were a UX problem, you'd see uniform drop-off across price bands. The problem was specific
+      to high-AOV items.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">The Key Insight</div>
+      <p>On Flipkart and Amazon, effective price — after bank offers, cashback, and EMI — was prominently surfaced on the PDP. On Neu, users had to work to figure out what they'd actually pay. For a new platform without established trust, that's a fatal gap.</p>
+    </div>
+
+    <p>
+      Electronics buyers are highly price-sensitive and already predisposed to trust incumbents.
+      If they can't quickly see they're getting a fair deal, they leave. The diagnosis was clear:
+      this wasn't a UX problem or a product quality problem. <strong>It was a pricing perception
+      problem.</strong>
+    </p>
+  </div>
 
   <div class="cs-section">
-    <div class="cs-section-label">Funnel Overview</div>
-    <div class="image-placeholder" onclick="alert('Replace with your funnel drop-off diagram')">
-      <div class="image-placeholder-icon">📉</div>
-      <strong>Funnel Drop-off Diagram</strong>
-      <p>Add your funnel visualisation: Homepage → Category → PDP → Cart → Checkout → Confirm</p>
+    <div class="cs-section-label">The Roadmap Approach</div>
+    <p>
+      Once the diagnosis was clear, I structured the roadmap in two layers — quick wins first
+      to show early momentum, then longer bets requiring more engineering and cross-functional buy-in.
+      Running them sequentially meant each test was clean — we could attribute impact to the
+      specific intervention rather than have signals bleed into each other.
+    </p>
+    <div class="tradeoffs" style="margin-top: 20px;">
+      <div class="tradeoff-card">
+        <h4>Intervention 1</h4>
+        <p>Best Deals Widget — pricing perception on PDP</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Intervention 2</h4>
+        <p>Accessories & Extended Warranty — AOV at cart stage</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Intervention 3</h4>
+        <p>Platform Coupons — new user first transaction</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Intervention 4</h4>
+        <p>NeuPass Loyalty Tier Benefits — repeat purchase habit</p>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="tab-panel" id="tab-approach">
-  <div class="cs-section">
-    <div class="cs-section-label">The Approach</div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num"></div>
-        <h4>Building the Funnel Map</h4>
-        <p>Pulled session-level data across [X] weeks. Mapped the full funnel: Homepage → Category page → PDP → Add to Cart → Checkout → Payment → Confirm. Identified the PDP→Cart step as the primary leakage point — [X]% of PDP visitors did not add to cart.</p>
+<!-- INTERVENTIONS -->
+<div class="tab-panel" id="tab-interventions">
+
+  <!-- 1: Best Deals Widget -->
+  <div class="intervention-card">
+    <div class="intervention-num">01</div>
+    <div class="intervention-title">Best Deals Widget</div>
+    <div class="intervention-subtitle">Pricing perception on the PDP · Quick win</div>
+    <div class="intervention-body">
+      <p>
+        PDP-to-cart conversion was at 21%. Price-band segmentation pointed clearly to pricing perception as the cause.
+        Tata Neu had genuinely good offers — bank discounts, product coupons, exchange value — but they were fragmented.
+        A user on a ₹80,000 laptop PDP had to open each offer individually, figure out what was stackable, mentally
+        calculate the exchange value, and arrive at an effective price themselves. That's too much cognitive load
+        at a moment when they're already uncertain about a high-value purchase on a new platform.
+      </p>
+      <p>
+        The Best Deals widget consolidated all stackable offers a user was eligible for — product offers, coupons,
+        bank discounts — and showed the final price they'd actually pay, both with and without exchange. Users could
+        select their exchange product, select their bank offer, and see the exact final price in real time.
+        No mental math, no uncertainty.
+      </p>
+
+      <div class="design-decision">
+        <div class="dd-label">Design Decision 1</div>
+        <p class="dd-text">Deliberately excluded combo offers — those require adding a second product, which is a different decision entirely. Mixing them in would have complicated the widget and diluted its core purpose: show the best price on this product, right now.</p>
       </div>
-      <div class="step">
-        <div class="step-num"></div>
-        <h4>Qualitative Diagnosis</h4>
-        <p>Ran user interviews and session replay analysis to understand why. Three recurring themes: (a) users couldn't easily compare specs across products, (b) EMI/financing options weren't surfaced early enough, (c) product return and warranty information was buried.</p>
+      <div class="design-decision">
+        <div class="dd-label">Design Decision 2</div>
+        <p class="dd-text">Set a configurable threshold — the widget only shows when the effective price after offers is less than 90% of MRP. A widget that shows up with a ₹50 saving on a ₹50,000 product doesn't just fail to help — it actively undermines trust. Every time the widget appears, it needed to be genuinely valuable.</p>
       </div>
-      <div class="step">
-        <div class="step-num"></div>
-        <h4>Prioritized Interventions</h4>
-        <p>Ranked interventions by effort vs. impact and ran them in sequence: (1) Sticky spec comparison bar on PDP, (2) EMI calculator above the fold, (3) Trust badges (warranty, returns, NeuCoins) on PDP. Ran each as a controlled test.</p>
+
+      <p>We ran it as an A/B test. Within 2 weeks, PDP-to-cart conversion moved from 21% to 28%.</p>
+
+      <div class="conversion-bar">
+        <div class="cb-row">
+          <div class="cb-label">Before</div>
+          <div class="cb-track"><div class="cb-fill before" style="width:21%"></div></div>
+          <div class="cb-val before">21%</div>
+        </div>
+        <div class="cb-row">
+          <div class="cb-label">After</div>
+          <div class="cb-track"><div class="cb-fill after" style="width:28%"></div></div>
+          <div class="cb-val after">28%</div>
+        </div>
       </div>
+
+      <p>
+        The clearest signal that the barrier was informational, not motivational — users wanted to buy,
+        they just needed confidence on price. The next phase planned was bringing this to the PLP,
+        so users could see their effective price before even opening the PDP.
+      </p>
+    </div>
+    <div class="intervention-result">
+      <div class="ir-num">+33%</div>
+      <div class="ir-label">PDP-to-cart conversion improvement<br>21% → 28% within 2 weeks of launch</div>
     </div>
   </div>
 
-  <div class="cs-section">
-    <div class="cs-section-label">PDP Before / After</div>
-    <div class="image-placeholder" onclick="alert('Replace with your PDP before/after design comparison')">
-      <div class="image-placeholder-icon">🖼️</div>
-      <strong>PDP Before / After</strong>
-      <p>Add a side-by-side comparison of the old and redesigned PDP</p>
+  <!-- 2: Accessories -->
+  <div class="intervention-card">
+    <div class="intervention-num">02</div>
+    <div class="intervention-title">Accessories Recommendation & Extended Warranty</div>
+    <div class="intervention-subtitle">AOV improvement at cart stage</div>
+    <div class="intervention-body">
+      <p>
+        After solving the pricing perception problem, I turned to AOV. Cart composition data showed
+        that most electronics orders were single-item — users were buying the primary product but not
+        picking up accessories. The opportunity was clear: if someone is buying a phone, they likely
+        need a screen protector or a case — we just weren't surfacing it effectively.
+      </p>
+      <p>
+        I worked with the personalization team to build a <strong>compatibility-aware recommendation
+        algorithm</strong>. The core insight: accessory recommendations only work if they're relevant —
+        a generic "you might also like" carousel is noise. So we built feature-based compatibility matching:
+        for each primary product, we identified which accessory categories needed a compatibility check
+        and which features had to match.
+      </p>
+
+      <div class="design-decision">
+        <div class="dd-label">Key Design Decision</div>
+        <p class="dd-text">Differentiated the logic by accessory type rather than applying a blanket rule. A screen protector for a phone requires model-series matching (S23 protector won't fit S21). A power bank recommendation doesn't — compatibility is near-universal. This distinction made recommendations genuinely useful rather than generic.</p>
+      </div>
+
+      <p>
+        These recommendations appeared on the PDP — before the user added to cart — so the accessory
+        was part of the purchase decision, not an afterthought. Extended Warranty was handled separately,
+        surfaced as a standalone recommendation at the right moment. It's a fundamentally different
+        proposition — a protection plan, not a product — so bundling it with accessories would have
+        muddied the message.
+      </p>
+    </div>
+    <div class="intervention-result">
+      <div class="ir-num">+10%</div>
+      <div class="ir-label">Increase in Average Order Value<br>via compatibility-aware accessory recommendations</div>
     </div>
   </div>
+
+  <!-- 3: New User Transactors -->
+  <div class="intervention-card">
+    <div class="intervention-num">03</div>
+    <div class="intervention-title">Platform Offers for New User Transactors</div>
+    <div class="intervention-subtitle">Breaking the first-purchase trust barrier · Infrastructure build</div>
+    <div class="intervention-body">
+      <p>
+        First-time transactors needed more motivation to complete their initial purchase. Tata Neu gives
+        NeuCoins on every transaction, but NeuCoins benefit a future transaction — they don't reduce
+        what you pay today. For a hesitant new user making a high-value electronics purchase on an
+        unfamiliar platform, that's insufficient motivation.
+      </p>
+      <p>
+        When we tried to execute a platform-wide new user offer, we hit a fundamental infrastructure gap:
+        <strong>every brand on Tata Neu ran its own offer engine in isolation with no cross-brand
+        communication.</strong> A user could redeem a new user offer on Croma and redeem it again on
+        BigBasket — because neither engine knew what the other had done.
+      </p>
+
+      <div class="design-decision">
+        <div class="dd-label">The Solution</div>
+        <p class="dd-text">Tata Digital's central offer engine as the backbone with a Segment-as-a-Service layer to maintain real-time user state. When a user registers, a Golden Records database entry triggers a new user event that updates their segment. When they apply the coupon at any brand, the central validate API checks their segment in real time. On redemption, a central redemption API immediately updates the segment — offer can't be claimed again anywhere on the platform.</p>
+      </div>
+
+      <p>On the Croma journey, I integrated platform coupons at three touchpoints — PLP, PDP, and cart — but only for eligible users (new and anonymous). The coupon card surfaces savings value, offer description, and coupon code. In the Best Deals widget, this coupon discount is factored in alongside bank offers and exchange value to show the true final price.</p>
+
+      <p><strong>Two edge cases I solved explicitly:</strong></p>
+      <div class="infra-flow">
+        <div class="infra-step">
+          <div class="infra-step-num">1</div>
+          <div><strong>Concurrent application</strong> — a user could theoretically apply the coupon simultaneously from two devices in two brand journeys. Solution: 10-minute block on the coupon the moment it's applied — can't be used anywhere on the platform during that window.</div>
+        </div>
+        <div class="infra-step">
+          <div class="infra-step-num">2</div>
+          <div><strong>Channel integrity</strong> — this was a Tata Neu exclusive offer; applying the code on Croma.com directly should be rejected. Solution: channel ID check in the validation flow, along with required fraud risk management checks.</div>
+        </div>
+      </div>
+    </div>
+    <div class="intervention-result">
+      <div class="ir-num">+15%</div>
+      <div class="ir-label">Increase in new user transactions<br>within 2 months of launch</div>
+    </div>
+  </div>
+
+  <!-- 4: Loyalty -->
+  <div class="intervention-card">
+    <div class="intervention-num">04</div>
+    <div class="intervention-title">NeuPass Loyalty Tier Benefits</div>
+    <div class="intervention-subtitle">Building a repeat purchase habit</div>
+    <div class="intervention-body">
+      <p>
+        We had a loyalty programme — NeuPass — with four tiers determined by a customer's transaction
+        history. Higher tiers earned better NeuCoin percentages and exclusive offers. But in the Electronics
+        journey, <strong>none of this was visible.</strong> Users didn't know what tier they were on,
+        what they were earning, or what exclusive offers they were eligible for. The loyalty programme
+        existed, but it wasn't doing any work inside the purchase journey.
+      </p>
+      <p>The fix had two parts:</p>
+      <p>
+        First, I surfaced tier identity and NeuCoin earnings directly in the Electronics journey — so a
+        user could see their current tier and exactly how many NeuCoins they'd earn on a given order
+        before checkout. This made the loyalty programme feel tangible and immediate, not abstract.
+      </p>
+      <p>
+        Second, I integrated exclusive tier offers into the journey at three touchpoints — PLP, PDP,
+        and cart. The technical mechanism worked through C# validation: when a user lands in the journey,
+        their customer hash identifies their tier segment, surfacing the offers they're exclusively eligible for.
+      </p>
+
+      <div class="design-decision">
+        <div class="dd-label">Design Decision</div>
+        <p class="dd-text">Exclusive tier coupons were visually differentiated — highlighted with a special NeuPass design on the coupon card, so users immediately understood this wasn't a generic offer, it was something they'd earned. Making exclusivity feel real was critical to making loyalty tangible.</p>
+      </div>
+    </div>
+    <div class="intervention-result">
+      <div class="ir-num">+10%</div>
+      <div class="ir-label">Increase in user retention in Electronics category</div>
+    </div>
+  </div>
+
 </div>
 
+<!-- DECISIONS -->
 <div class="tab-panel" id="tab-decisions">
   <div class="cs-section">
     <div class="cs-section-label">Key Decisions & Tradeoffs</div>
     <div class="tradeoffs">
       <div class="tradeoff-card">
         <h4>Sequential tests over a single big release</h4>
-        <p>Isolated signal from each change. Harder to ship, but cleaner learnings that could be replicated in other categories (Jewellery, Appliances).</p>
+        <p>Running interventions one at a time meant clean attribution — we knew exactly which change drove which result. Harder to ship, but produced defensible learnings we could replicate across other categories (Jewellery, Appliances).</p>
       </div>
       <div class="tradeoff-card">
-        <h4>Prioritised PDP over checkout</h4>
-        <p>Checkout was already well-optimised. The real drop was earlier in the funnel — fixing the wrong stage would have had minimal impact.</p>
+        <h4>Price perception before UX</h4>
+        <p>The instinct would have been to redesign the PDP. The data showed it was a pricing confidence problem, not a design problem. Solving the wrong problem first would have wasted 2–3 months of engineering.</p>
       </div>
       <div class="tradeoff-card">
-        <h4>EMI above the fold — contentious internally</h4>
-        <p>Some stakeholders worried it made the product look expensive. Data showed it actually increased conversion for high-AOV products — users appreciated transparency.</p>
+        <h4>90% MRP threshold on Best Deals widget</h4>
+        <p>A widget showing a trivial saving actively hurts trust on a platform users don't yet trust. The threshold ensured the widget only appeared when it was genuinely valuable — protecting both conversion and brand credibility.</p>
       </div>
       <div class="tradeoff-card">
-        <h4>Sticky spec comparison bar</h4>
-        <p>Required engineering effort to persist across scroll. Alternative was a modal — rejected because it interrupted the browse flow and had lower engagement in testing.</p>
+        <h4>New user offer funded from acquisition budget</h4>
+        <p>Not from category margin — this was critical for stakeholder alignment. The offer was framed as an acquisition cost, not a discount, which changed how commercial leadership evaluated its ROI.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Accessories on PDP, not cart</h4>
+        <p>Surfacing accessories before add-to-cart made them part of the purchase decision. At cart, they feel like an upsell. On PDP, they feel like useful context. Same product, very different user psychology.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Extended Warranty surfaced separately</h4>
+        <p>Bundling it with accessories would have muddied the message. A protection plan is a different proposition — it needed its own moment in the journey to be taken seriously.</p>
       </div>
     </div>
   </div>
@@ -156,47 +435,69 @@
     <div class="cs-section-label">What I'd Do Differently</div>
     <div class="callout">
       <div class="callout-label">Retrospective</div>
-      <p>I'd instrument the comparison feature more granularly from day one — we knew users were using it but didn't track which spec rows drove the most engagement. That data would have informed future catalogue requirements for electronics listings.</p>
+      <p>I'd instrument the Best Deals widget more granularly from day one — we knew it was driving conversion but didn't track which specific offer type (bank discount vs. exchange vs. coupon) was the primary driver. That data would have informed where to invest further — whether to expand bank partnerships, improve the exchange programme, or prioritize coupon variety. I'd also push to bring the widget to the PLP earlier — we planned it but it didn't make the roadmap before I moved on.</p>
     </div>
   </div>
 </div>
 
+<!-- RESULTS -->
 <div class="tab-panel" id="tab-results">
   <div class="cs-section">
-    <div class="cs-section-label">Results</div>
+    <div class="cs-section-label">Combined Impact</div>
+    <div class="results-grid">
+      <div class="rg-cell">
+        <div class="rg-val">21→28%</div>
+        <div class="rg-label">PDP-to-Cart Conversion (Best Deals Widget)</div>
+      </div>
+      <div class="rg-cell">
+        <div class="rg-val">+15%</div>
+        <div class="rg-label">New User Transactions (Platform Coupons)</div>
+      </div>
+      <div class="rg-cell">
+        <div class="rg-val">+10%</div>
+        <div class="rg-label">AOV Lift (Accessories Recommendations)</div>
+      </div>
+      <div class="rg-cell">
+        <div class="rg-val">+10%</div>
+        <div class="rg-label">User Retention (NeuPass Loyalty)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Results by Intervention</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Best Deals Widget — PDP-to-cart: 21% → 28% in 2 weeks</h4>
+        <p>The clearest signal that the barrier was informational. Users wanted to buy — they just needed confidence on price. A/B test confirmed causality; result was immediate and strong enough to unlock budget for the subsequent interventions.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Accessories & Extended Warranty — +10% AOV</h4>
+        <p>Compatibility-aware recommendations outperformed generic carousels. The model-series matching logic was the key differentiator — irrelevant recommendations would have hurt conversion, not helped it.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>New User Platform Coupons — +15% new user transactions in 2 months</h4>
+        <p>The infrastructure build was the harder part. Once the central offer engine was in place, it became a platform asset — usable across all brands and categories, not just Electronics.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>NeuPass Loyalty Tiers — +10% Electronics category retention</h4>
+        <p>Making an existing programme visible drove measurable retention lift. The lesson: invisible loyalty programmes don't build loyalty. The NeuPass design differentiation was critical — generic coupon cards don't create the "I earned this" feeling.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Broader Impact</div>
     <ul>
-      <li>[X]% improvement in PDP→Cart conversion rate</li>
-      <li>Estimated ₹[X]Cr annual revenue impact from conversion lift</li>
-      <li>EMI surfacing drove [X]% of electronics GMV via financing</li>
-      <li>Learnings applied to Jewellery and Appliances categories</li>
+      <li>Best Deals widget learnings applied to Jewellery and Appliances categories</li>
+      <li>Central offer engine infrastructure became a platform-wide asset for all future acquisition campaigns</li>
+      <li>Accessory recommendation framework extended to other high-accessory categories</li>
+      <li>Sequential test methodology adopted as standard practice for category roadmaps</li>
     </ul>
-  </div>
-
-  <div class="cs-section">
-    <div class="cs-section-label">Impact Visualisation</div>
-    <div class="image-placeholder" onclick="alert('Replace with your results chart or dashboard')">
-      <div class="image-placeholder-icon">📊</div>
-      <strong>Conversion Lift Chart</strong>
-      <p>Add your before/after conversion rate chart or revenue impact visualisation</p>
-    </div>
-  </div>
-</div>
-
-<div class="tab-panel" id="tab-artifacts">
-  <div class="cs-section">
-    <div class="cs-section-label">Artifacts & Deliverables</div>
-    <p style="color: var(--muted); margin-bottom: 32px;">Add links or embeds of your actual work — funnel analysis, design files, test results.</p>
-
-    <div class="image-placeholder" onclick="alert('Replace with funnel analysis or SQL queries')">
-      <div class="image-placeholder-icon">🔍</div>
-      <strong>Funnel Analysis</strong>
-      <p>Add your funnel diagnostic, session replay findings, or SQL analysis</p>
-    </div>
-    <div class="image-placeholder" onclick="alert('Replace with design files or Figma embed')">
-      <div class="image-placeholder-icon">🎨</div>
-      <strong>Design Files</strong>
-      <p>Embed Figma frames or add PDP redesign screenshots</p>
-    </div>
   </div>
 </div>
 
