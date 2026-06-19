@@ -5,434 +5,606 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Best Deals Widget — Tata Neu</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #f0f0f0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh; padding: 24px 16px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #f2f1ee;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px;
+}
 
-  /* PHONE FRAME */
-  .phone {
-    width: 375px;
-    background: #fff;
-    border-radius: 40px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.18), 0 0 0 10px #1a1a1a;
-    overflow: hidden;
-    position: relative;
-  }
-  .phone-notch {
-    background: #1a1a1a;
-    height: 36px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .phone-notch-bar { width: 100px; height: 5px; background: #333; border-radius: 3px; }
+/* ── SPLIT LAYOUT ── */
+.split {
+  display: flex;
+  gap: 56px;
+  align-items: flex-start;
+  max-width: 1100px;
+  width: 100%;
+}
 
-  /* STATUS BAR */
-  .status-bar {
-    background: #fff;
-    padding: 8px 20px 4px;
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 13px; font-weight: 600;
-  }
-  .status-icons { display: flex; gap: 5px; align-items: center; font-size: 12px; }
+/* ── LEFT: PHONE FRAME ── */
+.phone-wrap { flex-shrink: 0; }
+.phone {
+  width: 360px;
+  background: #fff;
+  border-radius: 44px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.22), 0 0 0 10px #1a1a1a, 0 0 0 11px #333;
+  overflow: hidden;
+  position: relative;
+}
+.phone-notch {
+  background: #1a1a1a; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-notch-bar { width: 90px; height: 5px; background: #333; border-radius: 3px; }
+.status-bar {
+  background: #fff; padding: 6px 18px 2px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; font-weight: 600;
+}
+.status-icons { display: flex; gap: 4px; align-items: center; font-size: 11px; }
+.nav-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 14px 8px; border-bottom: 1px solid #f0f0f0;
+}
+.nav-back { font-size: 20px; color: #333; cursor: pointer; }
+.nav-icons { display: flex; gap: 14px; font-size: 18px; color: #333; }
 
-  /* NAV BAR */
-  .nav-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 16px 10px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .nav-back { font-size: 22px; color: #333; cursor: pointer; }
-  .nav-icons { display: flex; gap: 16px; color: #333; font-size: 20px; }
+/* SCROLLABLE CONTENT */
+.product-scroll { max-height: 680px; overflow-y: auto; }
+.product-scroll::-webkit-scrollbar { width: 3px; }
+.product-scroll::-webkit-scrollbar-thumb { background: #ddd; }
+.product-section { padding: 12px 14px; }
 
-  /* PRODUCT CONTENT */
-  .product-scroll { max-height: 720px; overflow-y: auto; }
-  .product-scroll::-webkit-scrollbar { width: 3px; }
-  .product-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+/* OFFER CHIPS above price */
+.offer-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.offer-chip { background: #e8f5ef; color: #0a7a52; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; }
 
-  .product-section { padding: 14px 16px; }
+.product-name { font-size: 17px; font-weight: 700; color: #111; line-height: 1.3; margin-bottom: 3px; }
+.product-spec { font-size: 12px; color: #888; margin-bottom: 10px; }
+.price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.price-main { font-size: 24px; font-weight: 700; color: #111; }
+.price-emi { font-size: 13px; color: #555; }
+.price-emi span { color: #1a8a5a; text-decoration: underline; font-weight: 600; }
+.price-original-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.price-original { font-size: 13px; color: #999; text-decoration: line-through; }
+.price-badge { background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 700; color: #444; }
 
-  .product-name { font-size: 20px; font-weight: 700; color: #111; line-height: 1.3; margin-bottom: 4px; }
-  .product-spec { font-size: 13px; color: #888; margin-bottom: 14px; }
+/* ── BEST DEALS WIDGET ── */
+.best-deals { border-radius: 12px; overflow: hidden; border: 1px solid #d0ece3; margin-bottom: 12px; }
+.bd-header {
+  background: #e8f5ef; padding: 11px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.bd-header-left { display: flex; align-items: center; gap: 8px; }
+.bd-header-icon { font-size: 16px; }
+.bd-header-title { font-size: 14px; font-weight: 700; color: #0f6e4a; }
+.bd-chevron { font-size: 16px; color: #0f6e4a; transition: transform 0.25s; }
+.bd-chevron.open { transform: rotate(180deg); }
+.bd-body { background: #fff; }
 
-  .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
-  .price-main { font-size: 26px; font-weight: 700; color: #111; }
-  .price-emi { font-size: 14px; color: #555; }
-  .price-emi span { font-weight: 600; color: #1a8a5a; text-decoration: underline; }
-  .price-original-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
-  .price-original { font-size: 14px; color: #999; text-decoration: line-through; }
-  .price-badge { background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: 600; color: #444; }
+/* TABS */
+.bd-tabs { display: flex; background: #fafafa; border-bottom: 1px solid #eee; }
+.bd-tab {
+  flex: 1; padding: 9px 6px; text-align: center;
+  font-size: 12px; font-weight: 500; color: #888;
+  cursor: pointer; border-bottom: 2px solid transparent; user-select: none; transition: all 0.2s;
+}
+.bd-tab.active { color: #0f6e4a; border-color: #0f6e4a; font-weight: 700; background: #fff; }
+.bd-panel { display: none; }
+.bd-panel.active { display: block; }
 
-  /* ── BEST DEALS WIDGET ── */
-  .best-deals {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #d0ece3;
-    margin-bottom: 14px;
-  }
+/* INFO BAR */
+.info-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; background: #f0faf5;
+  border-bottom: 1px solid #e0f0ea;
+  font-size: 11px; color: #0f6e4a; font-weight: 500;
+}
+.info-bar-icon { color: #0f6e4a; font-size: 13px; }
 
-  /* Header */
-  .bd-header {
-    background: #e8f5ef;
-    padding: 13px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    cursor: pointer;
-    user-select: none;
-  }
-  .bd-header-left { display: flex; align-items: center; gap: 9px; }
-  .bd-header-icon { font-size: 18px; }
-  .bd-header-title { font-size: 15px; font-weight: 700; color: #0f6e4a; }
-  .bd-chevron { font-size: 18px; color: #0f6e4a; transition: transform 0.25s; }
-  .bd-chevron.open { transform: rotate(180deg); }
+/* OFFER ROWS */
+.offer-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid #f4f4f4; gap: 8px;
+}
+.offer-left { display: flex; align-items: flex-start; gap: 9px; flex: 1; }
+.offer-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.offer-icon.product { background: #fff3e0; }
+.offer-icon.txn { background: #e8f5ef; }
+.offer-icon.bank { background: #f0f0ff; }
+.offer-icon svg { width: 14px; height: 14px; }
+.offer-text { flex: 1; min-width: 0; }
+.offer-title { font-size: 12px; color: #222; line-height: 1.4; font-weight: 500; }
+.offer-sub { font-size: 11px; color: #0f6e4a; font-weight: 700; margin-top: 2px; cursor: pointer; letter-spacing: 0.02em; }
+.offer-sub.view-bank { text-transform: uppercase; }
+.offer-amount { font-size: 14px; font-weight: 700; color: #c62828; flex-shrink: 0; white-space: nowrap; }
 
-  /* Widget body */
-  .bd-body { background: #fff; }
+/* SECTION DIVIDER between offer types */
+.offer-section-label {
+  padding: 5px 14px 3px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: #bbb;
+  background: #fafafa; border-bottom: 1px solid #f4f4f4;
+}
 
-  /* TABS */
-  .bd-tabs {
-    display: flex;
-    border-bottom: 1px solid #eee;
-    background: #fafafa;
-  }
-  .bd-tab {
-    flex: 1; padding: 10px 8px; text-align: center;
-    font-size: 13px; font-weight: 500; color: #888;
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all 0.2s; user-select: none;
-  }
-  .bd-tab.active { color: #0f6e4a; border-color: #0f6e4a; font-weight: 700; background: #fff; }
+/* EXCHANGE ROW */
+.exchange-card {
+  margin: 8px 12px 10px;
+  border: 1px solid #cce8da;
+  border-radius: 8px; overflow: hidden;
+  background: #f4fbf7;
+}
+.exchange-card-header {
+  padding: 8px 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.exchange-card-left { display: flex; align-items: flex-start; gap: 8px; }
+.exchange-icon-wrap {
+  width: 26px; height: 26px; border-radius: 50%; background: #d4ede0;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.exchange-card-title { font-size: 12px; color: #222; font-weight: 500; line-height: 1.4; }
+.exchange-card-max { font-size: 13px; font-weight: 700; color: #0f6e4a; white-space: nowrap; }
+.select-device-btn {
+  display: inline-block; padding: 0 12px 8px 12px;
+  font-size: 11px; font-weight: 700; color: #0f6e4a;
+  letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+}
+.exchange-select-wrap { padding: 0 12px 10px; }
+.exchange-select {
+  width: 100%; padding: 7px 10px; border-radius: 6px;
+  border: 1px solid #c0ddd0; font-size: 12px; color: #333;
+  background: #fff; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  cursor: pointer;
+}
+.exchange-value-row {
+  display: none; padding: 6px 12px 10px;
+  font-size: 13px; font-weight: 700; color: #0f6e4a;
+  text-align: right;
+}
 
-  /* Tab panels */
-  .bd-panel { display: none; padding: 0; }
-  .bd-panel.active { display: block; }
+/* EFFECTIVE PRICE */
+.effective-price {
+  padding: 11px 14px; background: #f8fffe;
+  border-top: 1px solid #e0f0ea;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ep-left { font-size: 12px; color: #555; line-height: 1.5; }
+.ep-sub { font-size: 11px; color: #0f6e4a; font-weight: 500; }
+.ep-price { font-size: 20px; font-weight: 800; color: #111; }
 
-  /* Offer rows */
-  .offer-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f2f2f2;
-    gap: 10px;
-  }
-  .offer-row:last-of-type { border-bottom: none; }
-  .offer-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
-  .offer-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .offer-icon.coupon { background: #f0faf5; }
-  .offer-icon.bank { background: #f0f0f0; }
-  .offer-icon.exchange { background: #fff8e8; }
-  .offer-icon svg { width: 15px; height: 15px; }
-  .offer-text { flex: 1; }
-  .offer-title { font-size: 13px; color: #222; line-height: 1.4; font-weight: 500; }
-  .offer-sub { font-size: 12px; color: #0f6e4a; font-weight: 600; margin-top: 2px; cursor: pointer; }
-  .offer-amount { font-size: 15px; font-weight: 700; color: #c62828; flex-shrink: 0; }
-  .offer-amount.exchange-amt { color: #b45a00; }
+/* NEUCARD BANNER */
+.neucard-banner {
+  margin: 0 0 12px;
+  background: linear-gradient(135deg, #4b2d8f, #7b4bbf);
+  border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; position: relative; overflow: hidden;
+}
+.neucard-text { font-size: 12px; font-weight: 600; color: #fff; line-height: 1.4; }
+.neucard-text strong { font-size: 13px; font-weight: 800; display: block; margin-bottom: 1px; }
+.neucard-badge { background: #ffcc00; color: #333; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 12px; white-space: nowrap; }
+.neucard-tc { position: absolute; right: 8px; bottom: 5px; font-size: 9px; color: rgba(255,255,255,0.45); }
 
-  /* Exchange row special styling */
-  .offer-row.exchange-row {
-    background: #fffbf2;
-    border: 1px dashed #f0c060;
-    border-radius: 8px;
-    margin: 8px 12px 12px;
-    padding: 12px;
-  }
+/* ADD TO CART */
+.add-to-cart { padding: 10px 14px 16px; background: #fff; border-top: 1px solid #f0f0f0; }
+.atc-btn {
+  width: 100%; padding: 13px;
+  background: #1D9E75; color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s;
+}
+.atc-btn:hover { background: #178860; }
+.atc-btn:active { background: #126b4c; }
 
-  /* Exchange selector */
-  .exchange-selector {
-    margin: 10px 16px 4px;
-    background: #fffbf2;
-    border: 1px solid #f0c060;
-    border-radius: 8px;
-    padding: 10px 12px;
-  }
-  .exchange-label { font-size: 11px; font-weight: 700; color: #b45a00; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-  .exchange-select {
-    width: 100%; padding: 8px 10px; border-radius: 6px;
-    border: 1px solid #ddd; font-size: 13px; color: #333;
-    background: #fff; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 10px center;
-    cursor: pointer;
-  }
+/* ── BOTTOM SHEET ── */
+.sheet-overlay {
+  display: none; position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45); z-index: 100;
+  align-items: flex-end; justify-content: center;
+  border-radius: 44px;
+}
+.sheet-overlay.open { display: flex; }
+.sheet {
+  width: 100%; background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 0 32px;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-handle { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 16px; }
+.sheet-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 20px 14px; border-bottom: 1px solid #f0f0f0;
+}
+.sheet-title { font-size: 16px; font-weight: 700; color: #111; }
+.sheet-close { font-size: 22px; color: #888; cursor: pointer; line-height: 1; }
 
-  /* View all bank offers */
-  .view-all-bank {
-    text-align: center; padding: 8px 16px 12px;
-    font-size: 13px; font-weight: 700; color: #0f6e4a;
-    letter-spacing: 0.05em; cursor: pointer; text-transform: uppercase;
-  }
+/* HORIZONTAL CAROUSEL */
+.bank-carousel {
+  display: flex; gap: 12px; overflow-x: auto;
+  padding: 16px 20px; scroll-snap-type: x mandatory;
+}
+.bank-carousel::-webkit-scrollbar { display: none; }
+.bank-card {
+  min-width: 220px; padding: 14px;
+  border: 1px solid #e8e8e8; border-radius: 12px;
+  scroll-snap-align: start; flex-shrink: 0; background: #fff;
+  position: relative;
+}
+.bank-card-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 18px; }
+.bank-card-icon.purple { background: #f0e8ff; }
+.bank-card-icon.blue { background: #e8f0ff; }
+.bank-card-icon.red { background: #ffe8e8; }
+.bank-card-icon.orange { background: #fff3e0; }
+.bank-card-title { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 4px; }
+.bank-card-save { display: inline-block; background: #e8f5ef; color: #0f6e4a; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; }
+.bank-card-desc { font-size: 11px; color: #777; line-height: 1.5; }
+.bank-card-status { margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+.bank-card-status.applied { color: #0f6e4a; }
+.bank-card-status.eligible { color: #888; }
 
-  /* Divider */
-  .bd-divider { height: 1px; background: #f0f0f0; margin: 0 16px; }
+/* ── RIGHT PANEL ── */
+.info-panel { flex: 1; padding-top: 8px; }
+.info-label { font-size: 12px; font-weight: 700; color: #c84b0c; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+.info-heading { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.25; margin-bottom: 12px; font-family: Georgia, serif; }
+.info-desc { font-size: 15px; color: #555; line-height: 1.65; margin-bottom: 28px; }
 
-  /* Effective price */
-  .effective-price {
-    padding: 14px 16px;
-    background: #f8fffe;
-    border-top: 1px solid #e0f0ea;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .ep-left { font-size: 13px; color: #555; line-height: 1.5; }
-  .ep-sub { font-size: 12px; color: #0f6e4a; font-weight: 500; }
-  .ep-price { font-size: 22px; font-weight: 800; color: #111; }
+.steps-list { display: flex; flex-direction: column; gap: 2px; }
+.step-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 16px; border: 1px solid #e8e6e2; border-radius: 10px;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  background: #fff;
+}
+.step-item:hover { border-color: #c84b0c; background: #fdf8f5; }
+.step-num { font-size: 13px; font-weight: 800; color: #c84b0c; flex-shrink: 0; padding-top: 1px; min-width: 24px; }
+.step-content {}
+.step-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+.step-sub { font-size: 13px; color: #888; line-height: 1.4; }
 
-  /* NeuCard banner */
-  .neucard-banner {
-    margin: 0 0 14px;
-    background: linear-gradient(135deg, #4b2d8f, #7b4bbf);
-    border-radius: 10px;
-    padding: 14px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    overflow: hidden; position: relative;
-    cursor: pointer;
-  }
-  .neucard-text { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.4; }
-  .neucard-text span { font-size: 15px; font-weight: 800; display: block; margin-bottom: 2px; }
-  .neucard-img { font-size: 32px; }
-  .neucard-tc { position: absolute; right: 8px; bottom: 6px; font-size: 10px; color: rgba(255,255,255,0.5); }
-
-  /* Add to cart */
-  .add-to-cart {
-    padding: 14px 16px 20px;
-    background: #fff;
-    border-top: 1px solid #f0f0f0;
-    position: sticky; bottom: 0;
-  }
-  .atc-btn {
-    width: 100%; padding: 15px;
-    background: #1D9E75; color: #fff;
-    border: none; border-radius: 10px;
-    font-size: 16px; font-weight: 700;
-    cursor: pointer; transition: background 0.15s;
-  }
-  .atc-btn:hover { background: #178860; }
-  .atc-btn:active { background: #126b4c; transform: scale(0.99); }
-
-  /* Savings badge */
-  .savings-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: #e8f5ef; color: #0f6e4a; border-radius: 4px;
-    padding: 2px 8px; font-size: 11px; font-weight: 600;
-    margin-bottom: 10px;
-  }
-
-  /* Annotation tooltip */
-  .annotation {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.82); color: #fff;
-    padding: 10px 18px; border-radius: 20px;
-    font-size: 13px; font-weight: 500;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.3s;
-    white-space: nowrap; z-index: 999;
-  }
-  .annotation.show { opacity: 1; }
+/* tooltip */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: rgba(20,20,20,0.88); color: #fff;
+  padding: 9px 18px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s; white-space: nowrap; z-index: 200;
+}
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
-<div class="phone">
-  <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+<div class="split">
 
-  <!-- STATUS BAR -->
-  <div class="status-bar">
-    <span>5:49</span>
-    <div class="status-icons">
-      <span>▐▐▐▌</span>
-      <span>WiFi</span>
-      <span>🔋</span>
+  <!-- ── LEFT: PHONE FRAME ── -->
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+      <div class="status-bar">
+        <span>6:44</span>
+        <div class="status-icons">
+          <span>▐▐▌</span><span>WiFi</span><span>🔋</span>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <div class="nav-back">‹</div>
+        <div class="nav-icons"><span>🔍</span><span>⤴</span><span>🛒</span></div>
+      </div>
+
+      <div class="product-scroll">
+        <div class="product-section">
+
+          <!-- Offer chips -->
+          <div class="offer-chips">
+            <div class="offer-chip">Extra Rs.1000 Bank Offer</div>
+            <div class="offer-chip">Extra Rs.10% Off On Cart</div>
+          </div>
+
+          <div class="product-name">Condenser, ID318YKU</div>
+          <div class="product-spec">1.5 Ton Inverter AC, 3 Star Rating</div>
+          <div class="price-row">
+            <div class="price-main">₹32,990</div>
+            <div class="price-emi">or <span>₹1,553/mo*</span></div>
+          </div>
+          <div class="price-original-row">
+            <div class="price-original">₹56,400</div>
+            <div class="price-badge">41.51% OFF</div>
+          </div>
+
+          <!-- ═══════════════════════════
+               BEST DEALS WIDGET
+          ═══════════════════════════ -->
+          <div class="best-deals">
+            <div class="bd-header" onclick="toggleWidget()">
+              <div class="bd-header-left">
+                <span class="bd-header-icon">🏷️</span>
+                <span class="bd-header-title">Best deals for you</span>
+              </div>
+              <span class="bd-chevron open" id="bd-chevron">⌄</span>
+            </div>
+
+            <div class="bd-body" id="bd-body">
+              <!-- TABS -->
+              <div class="bd-tabs">
+                <div class="bd-tab active" id="tab-no" onclick="switchTab('no')">Without Exchange</div>
+                <div class="bd-tab" id="tab-with" onclick="switchTab('with')">With Exchange</div>
+              </div>
+
+              <!-- ── TAB 1: WITHOUT EXCHANGE ── -->
+              <div class="bd-panel active" id="panel-no">
+                <!-- Info bar -->
+                <div class="info-bar">
+                  <span class="info-bar-icon">ℹ️</span>
+                  Save upto ₹5,500 more with Exchange
+                </div>
+
+                <!-- 1. Product Offer -->
+                <div class="offer-section-label">Product Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon product">
+                      <!-- shopping bag -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Extra 10% Off on Cart</div>
+                      <div class="offer-sub" onclick="showToast('Applied on final cart value at checkout')">read more</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹3,299</div>
+                </div>
+
+                <!-- 2. Transaction Offer -->
+                <div class="offer-section-label">Transaction Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon txn">
+                      <!-- tag/coupon -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#0f6e4a" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Buy & Get 5% NeuCoins back</div>
+                      <div class="offer-sub" onclick="showToast('NeuCoins credited within 48h of delivery')">read more</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹1,650</div>
+                </div>
+
+                <!-- 3. Bank Offer -->
+                <div class="offer-section-label">Bank Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon bank">
+                      <!-- card -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#5b4fcf" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Rs.1000 Instant/Direct Discount ... <span style="color:#0f6e4a;font-weight:700;cursor:pointer;" onclick="showToast('Valid on ICICI, HDFC, SBI, AXIS Credit Cards')">read more</span></div>
+                      <div class="offer-sub view-bank" onclick="openSheet()">View all bank offers</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹1,000</div>
+                </div>
+
+                <div class="effective-price">
+                  <div class="ep-left">Get it as low as
+                    <div class="ep-sub">With these 3 offers</div>
+                  </div>
+                  <div class="ep-price">₹27,041</div>
+                </div>
+              </div>
+
+              <!-- ── TAB 2: WITH EXCHANGE ── -->
+              <div class="bd-panel" id="panel-with">
+
+                <!-- Exchange card at top -->
+                <div class="exchange-card">
+                  <div class="exchange-card-header">
+                    <div class="exchange-card-left">
+                      <div class="exchange-icon-wrap">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0f6e4a" stroke-width="2"><path d="M8 7h12M8 7l4-4M8 7l4 4M16 17H4M16 17l-4 4M16 17l-4-4"/></svg>
+                      </div>
+                      <div class="offer-text">
+                        <div class="offer-title">Save more with Exchange</div>
+                      </div>
+                    </div>
+                    <div class="exchange-card-max">Upto ₹5,500</div>
+                  </div>
+                  <div class="select-device-btn" onclick="toggleExchangeSelect()">SELECT DEVICE</div>
+                  <div class="exchange-select-wrap" id="exchange-select-wrap" style="display:none;">
+                    <select class="exchange-select" onchange="updateExchange(this)">
+                      <option value="0">-- Choose your old AC / appliance --</option>
+                      <option value="5500">1.5T Split AC, Good Condition — ₹5,500</option>
+                      <option value="4500">1T Window AC, Good Condition — ₹4,500</option>
+                      <option value="3000">1.5T Split AC, Fair Condition — ₹3,000</option>
+                      <option value="2000">Window AC, Any Condition — ₹2,000</option>
+                      <option value="1000">Any appliance (Damaged) — ₹1,000</option>
+                    </select>
+                    <div class="exchange-value-row" id="exchange-value-row"></div>
+                  </div>
+                </div>
+
+                <!-- 1. Product Offer -->
+                <div class="offer-section-label">Product Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon product">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Extra 10% Off on Cart</div>
+                      <div class="offer-sub" onclick="showToast('Applied on final cart value at checkout')">read more</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹3,299</div>
+                </div>
+
+                <!-- 2. Transaction Offer -->
+                <div class="offer-section-label">Transaction Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon txn">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#0f6e4a" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Buy & Get 5% NeuCoins back</div>
+                      <div class="offer-sub" onclick="showToast('NeuCoins credited within 48h of delivery')">read more</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹1,650</div>
+                </div>
+
+                <!-- 3. Bank Offer -->
+                <div class="offer-section-label">Bank Offer</div>
+                <div class="offer-row">
+                  <div class="offer-left">
+                    <div class="offer-icon bank">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#5b4fcf" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <div class="offer-text">
+                      <div class="offer-title">Rs.1000 Instant/Direct Discount ... <span style="color:#0f6e4a;font-weight:700;cursor:pointer;" onclick="showToast('Valid on ICICI, HDFC, SBI, AXIS Credit Cards')">read more</span></div>
+                      <div class="offer-sub view-bank" onclick="openSheet()">View all bank offers</div>
+                    </div>
+                  </div>
+                  <div class="offer-amount">- ₹1,000</div>
+                </div>
+
+                <div class="effective-price">
+                  <div class="ep-left">Get it as low as
+                    <div class="ep-sub" id="with-offer-count">With these 3 offers</div>
+                  </div>
+                  <div class="ep-price" id="with-final-price">₹27,041</div>
+                </div>
+              </div>
+
+            </div><!-- /bd-body -->
+          </div><!-- /best-deals -->
+
+          <!-- NeuCard Banner -->
+          <div class="neucard-banner">
+            <div class="neucard-text">
+              <strong>Get flat 10% NeuCoins</strong>
+              NeuCard Infinity
+            </div>
+            <div class="neucard-badge">SAVING DAYS 🅝</div>
+            <div class="neucard-tc">T&amp;C Apply</div>
+          </div>
+
+        </div><!-- /product-section -->
+
+        <div class="add-to-cart">
+          <button class="atc-btn" onclick="showToast('Added to cart! 🎉')">Add to cart</button>
+        </div>
+      </div><!-- /product-scroll -->
+
+      <!-- BOTTOM SHEET inside phone for correct overflow clipping -->
+      <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheetOnBg(event)">
+        <div class="sheet" id="sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-header">
+            <div class="sheet-title">Bank Offers</div>
+            <div class="sheet-close" onclick="closeSheet()">✕</div>
+          </div>
+          <div class="bank-carousel">
+            <div class="bank-card">
+              <div class="bank-card-icon purple">💳</div>
+              <div class="bank-card-title">Rs.1000 Instant/Direct Discount</div>
+              <div class="bank-card-save">Save upto ₹1,000</div>
+              <div class="bank-card-desc">Rs.1000 Instant/Direct Discount on ICICI, HDFC, SBI, AXIS Bank Credit Cards</div>
+              <div class="bank-card-status applied">● APPLIED</div>
+            </div>
+            <div class="bank-card">
+              <div class="bank-card-icon blue">🏦</div>
+              <div class="bank-card-title">ICICI 5% Cashback</div>
+              <div class="bank-card-save">Save upto ₹1,649</div>
+              <div class="bank-card-desc">5% cashback on ICICI Bank Credit Cards. Max ₹1,649. Min cart ₹15,000</div>
+              <div class="bank-card-status eligible">CHECK ELIGIBILITY</div>
+            </div>
+            <div class="bank-card">
+              <div class="bank-card-icon red">🏧</div>
+              <div class="bank-card-title">SBI Card EMI Offer</div>
+              <div class="bank-card-save">Save upto ₹800</div>
+              <div class="bank-card-desc">0% processing fee + ₹800 off on SBI Credit Card 6-month EMI</div>
+              <div class="bank-card-status eligible">CHECK ELIGIBILITY</div>
+            </div>
+            <div class="bank-card">
+              <div class="bank-card-icon orange">💰</div>
+              <div class="bank-card-title">Axis Magnus Offer</div>
+              <div class="bank-card-save">Save upto ₹1,200</div>
+              <div class="bank-card-desc">₹1,200 instant discount on Axis Magnus Credit Card above ₹25,000</div>
+              <div class="bank-card-status eligible">CHECK ELIGIBILITY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /phone -->
+  </div><!-- /phone-wrap -->
+
+
+  <!-- ── RIGHT: INFO PANEL ── -->
+  <div class="info-panel">
+    <div class="info-label">Interactive Prototype</div>
+    <div class="info-heading">Try the Best Deals Widget</div>
+    <div class="info-desc">
+      This widget surfaces all available savings in one place — product discounts,
+      transaction cashback, and bank offers — so users can see their true effective price before adding to cart.
+    </div>
+
+    <div class="steps-list">
+      <div class="step-item" onclick="switchTab('no'); showToast('Without Exchange tab active')">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">See all offer types</div>
+          <div class="step-sub">Product offer → Transaction offer → Bank offer, stacked by type</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="switchTab('with'); toggleExchangeSelectShow(); showToast('Switched to With Exchange — select a device!')">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Switch to With Exchange</div>
+          <div class="step-sub">Exchange card appears at top — effective price updates live</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="openSheet()">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">View all bank offers</div>
+          <div class="step-sub">Bottom sheet opens with horizontal carousel of eligible bank cards</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="toggleWidget(); showToast('Widget collapsed / expanded')">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Collapse the widget</div>
+          <div class="step-sub">Chevron toggles the Best Deals section closed and open</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- NAV -->
-  <div class="nav-bar">
-    <div class="nav-back">‹</div>
-    <div class="nav-icons">
-      <span>🔍</span>
-      <span>⤴</span>
-      <span>🛒</span>
-    </div>
-  </div>
+</div><!-- /split -->
 
-  <!-- SCROLLABLE PRODUCT CONTENT -->
-  <div class="product-scroll">
-    <div class="product-section">
 
-      <!-- Product Info -->
-      <div class="product-name">Samsung Galaxy S25, 8GB RAM, 256GB, Indigo</div>
-      <div class="product-spec">Display: 6.3 inches (16 cm), OLED, 120 Hz Refresh Rate</div>
-
-      <div class="price-row">
-        <div class="price-main">₹74,999</div>
-        <div class="price-emi">or <span>₹3,530/mo*</span></div>
-      </div>
-      <div class="price-original-row">
-        <div class="price-original">₹79,999</div>
-        <div class="price-badge">6.25% OFF</div>
-      </div>
-
-      <!-- ══════════════════════════════════
-           BEST DEALS WIDGET
-      ══════════════════════════════════ -->
-      <div class="best-deals">
-
-        <!-- Header (toggles widget) -->
-        <div class="bd-header" onclick="toggleWidget()">
-          <div class="bd-header-left">
-            <span class="bd-header-icon">🏷️</span>
-            <span class="bd-header-title">Best deals for you</span>
-          </div>
-          <span class="bd-chevron open" id="bd-chevron">⌄</span>
-        </div>
-
-        <!-- Widget Body -->
-        <div class="bd-body" id="bd-body">
-
-          <!-- TABS -->
-          <div class="bd-tabs">
-            <div class="bd-tab active" id="tab-no-exchange" onclick="switchTab('no-exchange')">Without Exchange</div>
-            <div class="bd-tab" id="tab-with-exchange" onclick="switchTab('with-exchange')">With Exchange</div>
-          </div>
-
-          <!-- ── TAB 1: WITHOUT EXCHANGE ── -->
-          <div class="bd-panel active" id="panel-no-exchange">
-
-            <div class="offer-row">
-              <div class="offer-left">
-                <div class="offer-icon coupon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0f6e4a" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                </div>
-                <div class="offer-text">
-                  <div class="offer-title">Buy &amp; Get 1% off (Discount coupon)</div>
-                  <div class="offer-sub" onclick="showTip('Coupon auto-applied at checkout')">read more</div>
-                </div>
-              </div>
-              <div class="offer-amount">- ₹750</div>
-            </div>
-
-            <div class="offer-row">
-              <div class="offer-left">
-                <div class="offer-icon bank">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                </div>
-                <div class="offer-text">
-                  <div class="offer-title">Instant discount ₹7,000 on NeuCard / HDFC</div>
-                  <div class="offer-sub" onclick="showTip('Valid on HDFC, Axis & NeuCard payments')">read more</div>
-                </div>
-              </div>
-              <div class="offer-amount">- ₹7,000</div>
-            </div>
-
-            <div class="view-all-bank" onclick="showTip('4 more bank offers available')">View all bank offers</div>
-            <div class="bd-divider"></div>
-
-            <div class="effective-price">
-              <div class="ep-left">
-                Get it as low as
-                <div class="ep-sub">With these 2 offers</div>
-              </div>
-              <div class="ep-price">₹67,249</div>
-            </div>
-          </div>
-
-          <!-- ── TAB 2: WITH EXCHANGE ── -->
-          <div class="bd-panel" id="panel-with-exchange">
-
-            <!-- Exchange phone selector -->
-            <div class="exchange-selector">
-              <div class="exchange-label">📱 Select your exchange phone</div>
-              <select class="exchange-select" onchange="updateExchange(this)">
-                <option value="0">-- Select your old phone --</option>
-                <option value="15000">Samsung Galaxy S22 (Good) — ₹15,000</option>
-                <option value="12000">iPhone 13 (Fair) — ₹12,000</option>
-                <option value="8000">OnePlus 10 Pro (Good) — ₹8,000</option>
-                <option value="5000">Redmi Note 12 (Good) — ₹5,000</option>
-                <option value="3000">Any phone (Damaged) — ₹3,000</option>
-              </select>
-            </div>
-
-            <!-- Other discounts first -->
-            <div class="offer-row">
-              <div class="offer-left">
-                <div class="offer-icon coupon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0f6e4a" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                </div>
-                <div class="offer-text">
-                  <div class="offer-title">Buy &amp; Get 1% off (Discount coupon)</div>
-                  <div class="offer-sub" onclick="showTip('Coupon auto-applied at checkout')">read more</div>
-                </div>
-              </div>
-              <div class="offer-amount">- ₹750</div>
-            </div>
-
-            <div class="offer-row">
-              <div class="offer-left">
-                <div class="offer-icon bank">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                </div>
-                <div class="offer-text">
-                  <div class="offer-title">Instant discount ₹7,000 on NeuCard / HDFC</div>
-                  <div class="offer-sub" onclick="showTip('Valid on HDFC, Axis & NeuCard payments')">read more</div>
-                </div>
-              </div>
-              <div class="offer-amount">- ₹7,000</div>
-            </div>
-
-            <!-- Exchange discount row (below other offers) -->
-            <div class="offer-row exchange-row" id="exchange-row">
-              <div class="offer-left">
-                <div class="offer-icon exchange">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#b45a00" stroke-width="2"><path d="M8 7h12M8 7l4-4M8 7l4 4M16 17H4M16 17l-4 4M16 17l-4-4"/></svg>
-                </div>
-                <div class="offer-text">
-                  <div class="offer-title" id="exchange-title" style="color:#b45a00; font-weight:600;">Select a phone above to see exchange value</div>
-                </div>
-              </div>
-              <div class="offer-amount exchange-amt" id="exchange-amount"></div>
-            </div>
-
-            <div class="view-all-bank" onclick="showTip('4 more bank offers available')">View all bank offers</div>
-            <div class="bd-divider"></div>
-
-            <div class="effective-price" id="exchange-effective">
-              <div class="ep-left">
-                Get it as low as
-                <div class="ep-sub" id="exchange-offer-count">With these 2 offers</div>
-              </div>
-              <div class="ep-price" id="exchange-final-price">₹67,249</div>
-            </div>
-          </div>
-
-        </div><!-- /bd-body -->
-      </div><!-- /best-deals -->
-
-      <!-- NeuCard Banner -->
-      <div class="neucard-banner">
-        <div class="neucard-text">
-          <span>Get flat 10% NeuCoins</span>
-          NeuCard Infinity
-        </div>
-        <div class="neucard-img">💳</div>
-        <div class="neucard-tc">T&amp;C Apply</div>
-      </div>
-
-    </div><!-- /product-section -->
-
-    <!-- ADD TO CART -->
-    <div class="add-to-cart">
-      <button class="atc-btn" onclick="showTip('Added to cart!')">Add to cart</button>
-    </div>
-
-  </div><!-- /product-scroll -->
-</div><!-- /phone -->
-
-<!-- Tooltip -->
-<div class="annotation" id="annotation"></div>
+<div class="toast" id="toast"></div>
 
 <script>
   var widgetOpen = true;
-  var currentTab = 'no-exchange';
+  var activeTab = 'no';
   var exchangeVal = 0;
+  var basePrice = 32990;
+  var productOff = 3299;
+  var neucoinsOff = 1650;
+  var bankOff = 1000;
+  var baseEffective = basePrice - productOff - neucoinsOff - bankOff; // 27,041
 
   function toggleWidget() {
     widgetOpen = !widgetOpen;
@@ -441,46 +613,56 @@
   }
 
   function switchTab(tab) {
-    currentTab = tab;
-    document.getElementById('tab-no-exchange').classList.toggle('active', tab === 'no-exchange');
-    document.getElementById('tab-with-exchange').classList.toggle('active', tab === 'with-exchange');
-    document.getElementById('panel-no-exchange').classList.toggle('active', tab === 'no-exchange');
-    document.getElementById('panel-with-exchange').classList.toggle('active', tab === 'with-exchange');
+    activeTab = tab;
+    ['no','with'].forEach(function(t) {
+      document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+      document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    });
+  }
+
+  var selectVisible = false;
+  function toggleExchangeSelect() {
+    selectVisible = !selectVisible;
+    document.getElementById('exchange-select-wrap').style.display = selectVisible ? 'block' : 'none';
+  }
+  function toggleExchangeSelectShow() {
+    selectVisible = true;
+    document.getElementById('exchange-select-wrap').style.display = 'block';
   }
 
   function updateExchange(sel) {
     exchangeVal = parseInt(sel.value) || 0;
-    var phone = sel.options[sel.selectedIndex].text;
-    var title = document.getElementById('exchange-title');
-    var amount = document.getElementById('exchange-amount');
-    var finalPrice = document.getElementById('exchange-final-price');
-    var offerCount = document.getElementById('exchange-offer-count');
+    var valueRow = document.getElementById('exchange-value-row');
+    var finalPrice = document.getElementById('with-final-price');
+    var offerCount = document.getElementById('with-offer-count');
 
     if (exchangeVal === 0) {
-      title.textContent = 'Select a phone above to see exchange value';
-      title.style.color = '#b45a00';
-      amount.textContent = '';
-      finalPrice.textContent = '₹67,249';
-      offerCount.textContent = 'With these 2 offers';
-    } else {
-      var phoneName = phone.split('(')[0].trim();
-      title.textContent = 'Exchange discount — ' + phoneName;
-      title.style.color = '#b45a00';
-      amount.textContent = '- ₹' + exchangeVal.toLocaleString('en-IN');
-      var effective = 74999 - 750 - 7000 - exchangeVal;
-      finalPrice.textContent = '₹' + effective.toLocaleString('en-IN');
+      valueRow.style.display = 'none';
+      finalPrice.textContent = '₹' + fmt(baseEffective);
       offerCount.textContent = 'With these 3 offers';
-      showTip('Exchange value updated: - ₹' + exchangeVal.toLocaleString('en-IN'));
+    } else {
+      valueRow.style.display = 'block';
+      valueRow.textContent = 'Exchange value: - ₹' + fmt(exchangeVal);
+      var effective = baseEffective - exchangeVal;
+      finalPrice.textContent = '₹' + fmt(effective);
+      offerCount.textContent = 'With these 4 offers';
+      showToast('Exchange applied: - ₹' + fmt(exchangeVal));
     }
   }
 
-  var tipTimer;
-  function showTip(msg) {
-    var el = document.getElementById('annotation');
+  function fmt(n) { return n.toLocaleString('en-IN'); }
+
+  function openSheet() { document.getElementById('sheet-overlay').classList.add('open'); }
+  function closeSheet() { document.getElementById('sheet-overlay').classList.remove('open'); }
+  function closeSheetOnBg(e) { if (e.target === document.getElementById('sheet-overlay')) closeSheet(); }
+
+  var toastTimer;
+  function showToast(msg) {
+    var el = document.getElementById('toast');
     el.textContent = msg;
     el.classList.add('show');
-    clearTimeout(tipTimer);
-    tipTimer = setTimeout(function() { el.classList.remove('show'); }, 2000);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2200);
   }
 </script>
 </body>
