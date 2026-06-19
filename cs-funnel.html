@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funnel Optimization — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work" class="active">Work</a>
+    <a href="about.html">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="cs-hero">
+  <a href="index.html" class="cs-back">← Back to all work</a>
+  <div class="cs-meta">
+    <span class="tag">Growth PM</span>
+    <span class="tag">Funnel Analysis</span>
+    <span class="tag">CRO</span>
+    <span class="tag">Consumer Commerce</span>
+  </div>
+  <h1 class="cs-title">Funnel Optimization —<br><em>Electronics</em></h1>
+  <p class="cs-subtitle">Tata Digital · Tata Neu · 2022</p>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]%</div>
+      <div class="cs-metric-label">Conversion Rate Improvement</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]pp</div>
+      <div class="cs-metric-label">Drop-off Reduction (PDP→Cart)</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">₹[X]Cr</div>
+      <div class="cs-metric-label">Revenue Impact</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]%</div>
+      <div class="cs-metric-label">Electronics GMV via EMI</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab-list">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
+    <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
+    <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
+  </div>
+</div>
+
+<div class="tab-panel active" id="tab-overview">
+  <div class="cs-section">
+    <div class="cs-section-label">The Problem</div>
+    <p>
+      The Electronics category on Tata Neu was underperforming relative to its traffic share.
+      Users were browsing but not buying — the category had [X]% higher drop-off at the product
+      detail page (PDP) than the platform average, and cart abandonment was [X]pp above benchmark.
+    </p>
+    <p>
+      Electronics is inherently a considered purchase — long research cycles, high comparison
+      behaviour, trust-sensitive. The challenge was to reduce friction without oversimplifying
+      a category where users want information, not just speed.
+    </p>
+    <div class="callout">
+      <div class="callout-label">Key Insight</div>
+      <p>[X]% of PDP visitors did not add to cart. User interviews revealed three recurring themes: inability to compare specs, EMI options buried, and trust signals (warranty, returns) not visible.</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">My Role</div>
+    <ul>
+      <li>Led the full funnel diagnostic from traffic → purchase</li>
+      <li>Prioritized hypotheses and designed the intervention roadmap</li>
+      <li>Worked with design and engineering on PDP and checkout improvements</li>
+      <li>Defined and tracked success metrics post-launch</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Funnel Overview</div>
+    <div class="image-placeholder" onclick="alert('Replace with your funnel drop-off diagram')">
+      <div class="image-placeholder-icon">📉</div>
+      <strong>Funnel Drop-off Diagram</strong>
+      <p>Add your funnel visualisation: Homepage → Category → PDP → Cart → Checkout → Confirm</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-approach">
+  <div class="cs-section">
+    <div class="cs-section-label">The Approach</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Building the Funnel Map</h4>
+        <p>Pulled session-level data across [X] weeks. Mapped the full funnel: Homepage → Category page → PDP → Add to Cart → Checkout → Payment → Confirm. Identified the PDP→Cart step as the primary leakage point — [X]% of PDP visitors did not add to cart.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Qualitative Diagnosis</h4>
+        <p>Ran user interviews and session replay analysis to understand why. Three recurring themes: (a) users couldn't easily compare specs across products, (b) EMI/financing options weren't surfaced early enough, (c) product return and warranty information was buried.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Prioritized Interventions</h4>
+        <p>Ranked interventions by effort vs. impact and ran them in sequence: (1) Sticky spec comparison bar on PDP, (2) EMI calculator above the fold, (3) Trust badges (warranty, returns, NeuCoins) on PDP. Ran each as a controlled test.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">PDP Before / After</div>
+    <div class="image-placeholder" onclick="alert('Replace with your PDP before/after design comparison')">
+      <div class="image-placeholder-icon">🖼️</div>
+      <strong>PDP Before / After</strong>
+      <p>Add a side-by-side comparison of the old and redesigned PDP</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-decisions">
+  <div class="cs-section">
+    <div class="cs-section-label">Key Decisions & Tradeoffs</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Sequential tests over a single big release</h4>
+        <p>Isolated signal from each change. Harder to ship, but cleaner learnings that could be replicated in other categories (Jewellery, Appliances).</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Prioritised PDP over checkout</h4>
+        <p>Checkout was already well-optimised. The real drop was earlier in the funnel — fixing the wrong stage would have had minimal impact.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>EMI above the fold — contentious internally</h4>
+        <p>Some stakeholders worried it made the product look expensive. Data showed it actually increased conversion for high-AOV products — users appreciated transparency.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Sticky spec comparison bar</h4>
+        <p>Required engineering effort to persist across scroll. Alternative was a modal — rejected because it interrupted the browse flow and had lower engagement in testing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">What I'd Do Differently</div>
+    <div class="callout">
+      <div class="callout-label">Retrospective</div>
+      <p>I'd instrument the comparison feature more granularly from day one — we knew users were using it but didn't track which spec rows drove the most engagement. That data would have informed future catalogue requirements for electronics listings.</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-results">
+  <div class="cs-section">
+    <div class="cs-section-label">Results</div>
+    <ul>
+      <li>[X]% improvement in PDP→Cart conversion rate</li>
+      <li>Estimated ₹[X]Cr annual revenue impact from conversion lift</li>
+      <li>EMI surfacing drove [X]% of electronics GMV via financing</li>
+      <li>Learnings applied to Jewellery and Appliances categories</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Impact Visualisation</div>
+    <div class="image-placeholder" onclick="alert('Replace with your results chart or dashboard')">
+      <div class="image-placeholder-icon">📊</div>
+      <strong>Conversion Lift Chart</strong>
+      <p>Add your before/after conversion rate chart or revenue impact visualisation</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-artifacts">
+  <div class="cs-section">
+    <div class="cs-section-label">Artifacts & Deliverables</div>
+    <p style="color: var(--muted); margin-bottom: 32px;">Add links or embeds of your actual work — funnel analysis, design files, test results.</p>
+
+    <div class="image-placeholder" onclick="alert('Replace with funnel analysis or SQL queries')">
+      <div class="image-placeholder-icon">🔍</div>
+      <strong>Funnel Analysis</strong>
+      <p>Add your funnel diagnostic, session replay findings, or SQL analysis</p>
+    </div>
+    <div class="image-placeholder" onclick="alert('Replace with design files or Figma embed')">
+      <div class="image-placeholder-icon">🎨</div>
+      <strong>Design Files</strong>
+      <p>Embed Figma frames or add PDP redesign screenshots</p>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 60px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+  <a href="cs-coupon.html" style="font-size:15px; font-weight:600; color: var(--orange);">← Dynamic Coupons</a>
+  <a href="cs-fleet.html" style="font-size:15px; font-weight:600; color: var(--orange);">Next: Fleet Guardian AI →</a>
+</div>
+
+<footer>
+  <span>© 2024 Ankita Maiti</span>
+  <a href="index.html" style="color: var(--orange);">← Back to portfolio</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

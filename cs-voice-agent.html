@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Voice Agent — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work" class="active">Work</a>
+    <a href="about.html">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- CASE STUDY HERO -->
+<div class="cs-hero">
+  <a href="index.html" class="cs-back">← Back to all work</a>
+  <div class="cs-meta">
+    <span class="tag">AI / LLM</span>
+    <span class="tag">Voice AI</span>
+    <span class="tag">B2B Commerce</span>
+    <span class="tag">Agentic Workflow</span>
+  </div>
+  <h1 class="cs-title">Agentic AI <em>Voice Agent</em></h1>
+  <p class="cs-subtitle">Hindustan Coca-Cola Beverages (HCCB) · 2023–2024</p>
+
+  <!-- ✏️ Replace [X] with real numbers when ready -->
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]%</div>
+      <div class="cs-metric-label">Retailer Order Conversion Lift</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]+</div>
+      <div class="cs-metric-label">SKUs per Voice Order</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]K</div>
+      <div class="cs-metric-label">Outlets Field Coverage</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">&lt;[X]%</div>
+      <div class="cs-metric-label">Error Rate at Steady State</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab-list">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
+    <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
+    <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-panel active" id="tab-overview">
+  <div class="cs-section">
+    <div class="cs-section-label">The Problem</div>
+    <p>
+      HCCB's field sales model depends on salespeople physically visiting retail outlets to take orders.
+      But coverage is finite — a salesperson can only visit so many outlets per day, and outlets in
+      low-density or remote areas often go unserved for days at a stretch.
+    </p>
+    <p>
+      The result: lost orders, reduced retailer loyalty, and revenue leakage that was structurally
+      hard to address through headcount alone.
+    </p>
+
+    <div class="callout">
+      <div class="callout-label">Key Insight</div>
+      <p>[X]% of uncovered outlets placed zero orders in off-visit weeks — confirming the coverage gap was causing lost revenue, not just delayed orders.</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">My Role</div>
+    <ul>
+      <li>Product owner for the end-to-end voice agent initiative — from problem framing to launch</li>
+      <li>Defined the LLM integration architecture alongside engineering and vendor teams</li>
+      <li>Led retailer research across [X] cities to validate voice-first ordering behaviour</li>
+      <li>Designed the agent conversation flow, fallback logic, and SKU disambiguation rules</li>
+      <li>Defined success metrics and ran post-launch analysis</li>
+    </ul>
+  </div>
+
+  <!-- ✏️ Add your diagram/flow here -->
+  <div class="cs-section">
+    <div class="cs-section-label">System Overview</div>
+    <div class="image-placeholder" onclick="alert('Click to replace with your flow diagram or architecture image')">
+      <div class="image-placeholder-icon">🗺️</div>
+      <strong>Conversation Flow Diagram</strong>
+      <p>Replace this with your agent architecture or conversation flow diagram</p>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<div class="tab-panel" id="tab-approach">
+  <div class="cs-section">
+    <div class="cs-section-label">The Approach</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Validating the Hypothesis</h4>
+        <p>Before committing to an AI solution, I ran structured interviews with field sales officers and retailers to confirm that voice was a viable channel — and that the drop-off in coverage was actually causing lost orders, not just delayed ones. Data confirmed [X]% of uncovered outlets placed zero orders in off-visit weeks.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Designing the Agent</h4>
+        <p>The core challenge was designing a voice interaction that felt natural to a kirana retailer — not a tech-savvy user. I mapped the full conversation flow: greeting and authentication, catalogue browsing by category or SKU name, quantity confirmation, order summary, and final submit.</p>
+        <p style="margin-top:12px;">We built fallback logic for misheard SKU names (common brand names vs. formal SKU codes), multi-language support (Hindi + regional languages), and a human handoff trigger when confidence scores dropped below threshold.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Integration and Rollout</h4>
+        <p>Worked with engineering to integrate the LLM backbone with HCCB's existing order management system. Ran a phased rollout starting with [X] pilot outlets, measuring conversion, order value, and error rates before scaling.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✏️ Add your conversation flow mock here -->
+  <div class="cs-section">
+    <div class="cs-section-label">Conversation Design</div>
+    <div class="image-placeholder" onclick="alert('Replace with your conversation flow mock or wireframe')">
+      <div class="image-placeholder-icon">💬</div>
+      <strong>Agent Conversation Flow Mock</strong>
+      <p>Add your Figma wireframe or conversation design here</p>
+    </div>
+  </div>
+</div>
+
+<!-- DECISIONS -->
+<div class="tab-panel" id="tab-decisions">
+  <div class="cs-section">
+    <div class="cs-section-label">Key Decisions & Tradeoffs</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Voice-first over app-first</h4>
+        <p>Retailers in coverage gaps often had low smartphone literacy; voice reduced friction substantially. An app would have required onboarding, downloads, and data literacy.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Built fallback to human agent</h4>
+        <p>Maintaining trust in the AI required a clear escape hatch. This also helped us collect failure cases for model improvement — invaluable early signal.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Constrained SKU catalogue intentionally</h4>
+        <p>Started with top 80% revenue SKUs to reduce ambiguity in voice recognition. Full catalogue would have increased disambiguation errors by an estimated [X]x.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Phased rollout over big-bang</h4>
+        <p>Starting with [X] pilot outlets gave us real error rates and retailer feedback before scaling. Slower to start, but prevented a poor experience at scale.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">What I'd Do Differently</div>
+    <div class="callout">
+      <div class="callout-label">Retrospective</div>
+      <p>I'd involve retailers earlier in the conversation flow design — we iterated more than expected on SKU disambiguation because we underestimated how locally-named products are in practice ("Thums Up" vs. "Cola 200ml"). Earlier co-design sessions would have reduced this.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="tab-panel" id="tab-results">
+  <div class="cs-section">
+    <div class="cs-section-label">Results</div>
+    <ul>
+      <li>[X]% lift in retailer order conversion in the pilot zone</li>
+      <li>Average order value of ₹[X] per voice session — comparable to in-person visits</li>
+      <li>Expanded effective coverage to [X]K outlets without adding headcount</li>
+      <li>Error rate below [X]% at steady state</li>
+    </ul>
+  </div>
+
+  <!-- ✏️ Add results charts/screenshots here -->
+  <div class="cs-section">
+    <div class="cs-section-label">Impact Visualisation</div>
+    <div class="image-placeholder" onclick="alert('Replace with your results chart or dashboard screenshot')">
+      <div class="image-placeholder-icon">📊</div>
+      <strong>Results Dashboard</strong>
+      <p>Add a chart, screenshot, or data visualisation showing the impact</p>
+    </div>
+  </div>
+</div>
+
+<!-- ARTIFACTS -->
+<div class="tab-panel" id="tab-artifacts">
+  <div class="cs-section">
+    <div class="cs-section-label">Artifacts & Deliverables</div>
+    <p style="color: var(--muted); margin-bottom: 32px;">
+      Add links, embeds, or images of your actual work artifacts here — PRDs, Figma mocks, research decks, etc.
+    </p>
+
+    <div class="image-placeholder" onclick="alert('Replace with your PRD, research deck, or prototype embed')">
+      <div class="image-placeholder-icon">📄</div>
+      <strong>PRD / Product Spec</strong>
+      <p>Link or embed your product requirements document</p>
+    </div>
+
+    <div class="image-placeholder" onclick="alert('Replace with Figma embed or prototype screenshots')">
+      <div class="image-placeholder-icon">🎨</div>
+      <strong>Prototype / Wireframes</strong>
+      <p>Embed your Figma prototype or add screenshots</p>
+    </div>
+
+    <div class="image-placeholder" onclick="alert('Replace with research findings or user interview notes')">
+      <div class="image-placeholder-icon">🔍</div>
+      <strong>User Research</strong>
+      <p>Add retailer interview highlights or research synthesis</p>
+    </div>
+  </div>
+</div>
+
+<!-- NAV BETWEEN CASE STUDIES -->
+<div style="padding: 60px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+  <span></span>
+  <a href="cs-coupon.html" style="font-size:15px; font-weight:600; color: var(--orange);">Next: Dynamic Coupon Intervention →</a>
+</div>
+
+<footer>
+  <span>© 2024 Ankita Maiti</span>
+  <a href="index.html" style="color: var(--orange);">← Back to portfolio</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

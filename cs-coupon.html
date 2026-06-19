@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Coupon Intervention — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work" class="active">Work</a>
+    <a href="about.html">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="cs-hero">
+  <a href="index.html" class="cs-back">← Back to all work</a>
+  <div class="cs-meta">
+    <span class="tag">Growth PM</span>
+    <span class="tag">Coupon Strategy</span>
+    <span class="tag">B2B eCommerce</span>
+    <span class="tag">A/B Testing</span>
+  </div>
+  <h1 class="cs-title">Dynamic Coupon <em>Intervention</em></h1>
+  <p class="cs-subtitle">Hindustan Coca-Cola Beverages · eB2B Platform · 2023</p>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]%</div>
+      <div class="cs-metric-label">Basket Size Uplift</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]%</div>
+      <div class="cs-metric-label">Coupon Redemption Rate</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]x</div>
+      <div class="cs-metric-label">ROI on Coupon Spend</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">[X]pp</div>
+      <div class="cs-metric-label">Cross-sell Penetration Lift</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab-list">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
+    <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
+    <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
+  </div>
+</div>
+
+<div class="tab-panel active" id="tab-overview">
+  <div class="cs-section">
+    <div class="cs-section-label">The Problem</div>
+    <p>
+      HCCB's eB2B platform had a healthy acquisition funnel but struggled with basket size —
+      retailers were ordering, but not ordering enough per session. Blanket discount strategies
+      were expensive and didn't drive category-level behaviour change.
+    </p>
+    <p>
+      The question: can we use targeted, context-aware coupons to nudge retailers toward larger,
+      more diverse baskets — without burning margin?
+    </p>
+    <div class="callout">
+      <div class="callout-label">Key Insight</div>
+      <p>[X]% of orders were single-category — most retailers used the platform for one product family and never cross-bought into snacks, juices, or water.</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">My Role</div>
+    <ul>
+      <li>Defined the coupon intervention strategy and targeting logic</li>
+      <li>Worked with data science to build eligibility and trigger rules</li>
+      <li>Designed the A/B test framework and success criteria</li>
+      <li>Presented findings and recommendations to commercial leadership</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">System Overview</div>
+    <div class="image-placeholder" onclick="alert('Replace with your coupon trigger flow or system diagram')">
+      <div class="image-placeholder-icon">🗺️</div>
+      <strong>Coupon Trigger Logic Diagram</strong>
+      <p>Add your propensity model diagram or trigger flow here</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-approach">
+  <div class="cs-section">
+    <div class="cs-section-label">The Approach</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Diagnosing the Problem</h4>
+        <p>Pulled order-level data across [X] retailer cohorts over [X] months. Identified that [X]% of orders were single-category — most retailers were using the platform for one product family and not cross-buying into snacks, juices, or water.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Designing the Intervention</h4>
+        <p>Designed a dynamic coupon trigger: when a retailer's cart hits a threshold value in Category A, they receive a contextual coupon offer for Category B. The offer appears at checkout — not earlier — to avoid cart abandonment from distraction.</p>
+        <p style="margin-top:12px;">Worked with the data science team to build retailer-level propensity scores so the nudge was relevant (e.g., a retailer who historically buys juice occasionally gets a juice coupon, not a water coupon).</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Testing and Measurement</h4>
+        <p>Ran a controlled A/B test across [X] outlets for [X] weeks. Treatment group received dynamic contextual coupons; control group saw standard blanket discounts. Measured basket size, category penetration, and coupon redemption rate.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">UX: Checkout Coupon Placement</div>
+    <div class="image-placeholder" onclick="alert('Replace with your checkout UI mock or before/after screenshots')">
+      <div class="image-placeholder-icon">🛒</div>
+      <strong>Checkout UI Mock</strong>
+      <p>Add a before/after screenshot of the coupon placement in checkout</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-decisions">
+  <div class="cs-section">
+    <div class="cs-section-label">Key Decisions & Tradeoffs</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Checkout timing over browse-time offer</h4>
+        <p>Tested both placements. Checkout placement had [X]% higher redemption with lower cart abandonment — showing the offer when intent was highest.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Propensity-based targeting over universal offers</h4>
+        <p>Higher cost to build, but significantly better ROI. Blanket offers had low relevance — a retailer who never buys juice doesn't respond to a juice coupon.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Capped coupon value at ₹[X]</h4>
+        <p>Ensured margin neutrality at scale while still driving behaviour change. Going higher drove redemption but eroded margin beyond acceptable range.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Sequential tests over single big release</h4>
+        <p>Isolated signal from each variable. Harder to ship but produced clean, defensible learnings for commercial leadership.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">What I'd Do Differently</div>
+    <div class="callout">
+      <div class="callout-label">Retrospective</div>
+      <p>I'd push for a longer test window. [X] weeks was enough for statistical significance on basket size, but not enough to measure whether the behaviour change persisted after coupons were removed. Understanding stickiness vs. dependency would have strengthened the rollout case.</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-results">
+  <div class="cs-section">
+    <div class="cs-section-label">Results</div>
+    <ul>
+      <li>[X]% increase in average basket size in the treatment group</li>
+      <li>[X]% coupon redemption rate vs. [X]% industry benchmark</li>
+      <li>[X]x ROI on coupon investment — approved for national rollout</li>
+      <li>Category cross-sell penetration increased by [X]pp</li>
+    </ul>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">A/B Test Results</div>
+    <div class="image-placeholder" onclick="alert('Replace with your A/B test results chart or analysis')">
+      <div class="image-placeholder-icon">📊</div>
+      <strong>Test Results Visualisation</strong>
+      <p>Add your A/B test results chart, basket size distribution, or ROI analysis</p>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-artifacts">
+  <div class="cs-section">
+    <div class="cs-section-label">Artifacts & Deliverables</div>
+    <p style="color: var(--muted); margin-bottom: 32px;">Add your actual work artifacts — strategy docs, test plans, SQL queries, stakeholder decks.</p>
+
+    <div class="image-placeholder" onclick="alert('Replace with your A/B test design doc or strategy')">
+      <div class="image-placeholder-icon">🧪</div>
+      <strong>A/B Test Design</strong>
+      <p>Link or embed your test plan and success criteria</p>
+    </div>
+    <div class="image-placeholder" onclick="alert('Replace with your stakeholder presentation')">
+      <div class="image-placeholder-icon">📊</div>
+      <strong>Commercial Leadership Deck</strong>
+      <p>Add the rollout recommendation deck you presented</p>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 60px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+  <a href="cs-voice-agent.html" style="font-size:15px; font-weight:600; color: var(--orange);">← Agentic Voice Agent</a>
+  <a href="cs-funnel.html" style="font-size:15px; font-weight:600; color: var(--orange);">Next: Funnel Optimization →</a>
+</div>
+
+<footer>
+  <span>© 2024 Ankita Maiti</span>
+  <a href="index.html" style="color: var(--orange);">← Back to portfolio</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

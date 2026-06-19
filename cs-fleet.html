@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet Guardian AI — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .signal-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .signal-name { font-size: 13px; color: #555550; width: 180px; flex-shrink: 0; }
+    .signal-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .signal-fill { height: 100%; border-radius: 3px; }
+    .signal-fill.red { background: #e24b4a; }
+    .signal-fill.amber { background: #ef9f27; }
+    .signal-val { font-size: 13px; font-weight: 600; width: 200px; text-align: right; flex-shrink: 0; }
+    .signal-val.red { color: #e24b4a; }
+    .signal-val.amber { color: #ef9f27; }
+
+    .flow-stages { display: flex; align-items: center; gap: 0; margin: 24px 0; flex-wrap: wrap; }
+    .flow-stage { display: flex; align-items: center; gap: 0; }
+    .flow-stage-box {
+      padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      background: var(--bg-card); border: 1px solid var(--border); white-space: nowrap;
+    }
+    .flow-stage-box.active { background: var(--orange-light); border-color: var(--orange); color: var(--orange); }
+    .flow-arrow { font-size: 16px; color: var(--muted); padding: 0 6px; }
+
+    .cost-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .cost-box { border-radius: 10px; padding: 20px; text-align: center; }
+    .cost-box.bad { background: #fcebeb; border: 1px solid #f0c8c8; }
+    .cost-box.good { background: #e8f5e9; border: 1px solid #c8e6c9; }
+    .cost-num { font-family: var(--serif); font-size: 32px; font-weight: 700; }
+    .cost-box.bad .cost-num { color: #c62828; }
+    .cost-box.good .cost-num { color: #2e7d32; }
+    .cost-label { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+    .workflow-steps { display: flex; flex-direction: column; gap: 0; }
+    .workflow-step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+    .workflow-step:last-child { border-bottom: none; }
+    .wf-num { width: 32px; height: 32px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .wf-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .wf-content p { font-size: 14px; color: #555550; line-height: 1.6; margin: 0; }
+
+    .metric-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 20px 0; }
+    .metric-grid-4 .mg-cell { background: var(--bg-card); padding: 20px 16px; }
+    .mg-val { font-family: var(--serif); font-size: 26px; font-weight: 700; color: var(--orange); }
+    .mg-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
+    .prototype-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #0e1610; margin: 20px 0; }
+    .prototype-label { padding: 12px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
+    .prototype-label a { font-size: 13px; color: var(--orange); }
+    .prototype-frame { width: 100%; height: 780px; border: none; display: block; }
+
+    .risk-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .risk-table th { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 10px 16px; text-align: left; border-bottom: 2px solid var(--border); }
+    .risk-table td { padding: 14px 16px; font-size: 14px; line-height: 1.6; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .risk-table tr:last-child td { border-bottom: none; }
+    .risk-sev { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .risk-sev.high { background: #fcebeb; color: #c62828; }
+    .risk-sev.med { background: #fff8e1; color: #f57f17; }
+
+    .roadmap-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .roadmap-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .roadmap-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .roadmap-box .rv { font-size: 12px; color: var(--orange); font-weight: 600; margin-bottom: 12px; }
+    .roadmap-box ul { list-style: none; padding: 0; }
+    .roadmap-box ul li { font-size: 13px; color: #555550; padding: 5px 0; border-bottom: 1px solid var(--border); }
+    .roadmap-box ul li:last-child { border-bottom: none; }
+    .roadmap-box ul li::before { content: '+ '; color: var(--orange); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work" class="active">Work</a>
+    <a href="about.html">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="cs-hero">
+  <a href="index.html" class="cs-back">← Back to all work</a>
+  <div class="cs-meta">
+    <span class="tag tag-personal">Personal Project</span>
+    <span class="tag">0→1 Product</span>
+    <span class="tag">B2B SaaS</span>
+    <span class="tag">Fleet Intelligence</span>
+    <span class="tag">IoT + AI</span>
+  </div>
+  <h1 class="cs-title">Fleet <em>Guardian</em> AI</h1>
+  <p class="cs-subtitle">Bytebeam PM Assignment · 2024 · 0→1 Product Design</p>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <div class="cs-metric-val">6–20</div>
+      <div class="cs-metric-label">Target Fleet Size (trucks)</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">$220B+</div>
+      <div class="cs-metric-label">India Road Freight Market</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">~1.5M</div>
+      <div class="cs-metric-label">Addressable Small Fleets</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">60 sec</div>
+      <div class="cs-metric-label">Signal to Action</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab-list">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('product', this)">Product Design</button>
+    <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Risks</button>
+    <button class="tab-btn" onclick="switchTab('prototype', this)">Live Prototype</button>
+    <button class="tab-btn" onclick="switchTab('roadmap', this)">Roadmap</button>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-panel active" id="tab-overview">
+  <div class="cs-section">
+    <div class="cs-section-label">The Problem</div>
+    <p>
+      India's road freight market is dominated by small fleet operators — owner-operators and small
+      logistics companies running 6 to 20 trucks. They carry a disproportionate share of freight
+      volume but lack access to the fleet intelligence tools that larger enterprises use.
+    </p>
+    <p>
+      These operators currently manage their fleet across <strong>7 broken workflow stages</strong>:
+      detecting that something is wrong, figuring out what it means, deciding what to do, notifying
+      the driver, contacting the workshop, updating the shipper, and logging it for future reference.
+      Every stage is manual. Every stage is a point of failure.
+    </p>
+
+    <div class="flow-stages">
+      <div class="flow-stage"><div class="flow-stage-box">Detect signal</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box">Interpret it</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box">Decide action</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box">Notify driver</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box">Book workshop</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box">Update shipper</div><div class="flow-arrow">→</div></div>
+      <div class="flow-stage"><div class="flow-stage-box active">Log & learn</div></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The Core Insight</div>
+      <p>Small fleet operators don't want a dashboard of charts. They want one number that answers "is my fleet okay today?" — and then for the system to act on their behalf when it's not. Fleet Guardian AI is built around this insight end to end.</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">User Segment</div>
+    <p>
+      Through research with small fleet operators and contrast interviews with larger logistics companies,
+      I identified three primary pain clusters driving daily loss:
+    </p>
+    <ul>
+      <li><strong>Unplanned vehicle downtime</strong> — no early warning before breakdowns; reactive repairs cost 8–9× preventive service</li>
+      <li><strong>Fuel leakage and theft</strong> — consumption anomalies undetected for days; 5–10% fuel loss common</li>
+      <li><strong>No driver behaviour visibility</strong> — harsh braking, over-speeding, idle time all invisible until complaints arrive</li>
+    </ul>
+    <p style="margin-top: 16px;">
+      Operators were willing to pay <strong>₹3,000–5,000/truck/month</strong> for a tool that demonstrably
+      reduced downtime — equivalent to recovering just one breakdown event per quarter.
+    </p>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">My Role</div>
+    <ul>
+      <li>Operated as founding PM — market sizing, user research synthesis, full PRD, feature prioritization, and interactive prototype</li>
+      <li>Interviewed small fleet operators and fleet managers at larger logistics companies for contrast</li>
+      <li>Applied JTBD framework to define the MVP primary job: "prevent my truck from going off-road unexpectedly"</li>
+      <li>Designed the end-to-end AI workflow: signal detection → insight → decision → parallel action execution → learning loop</li>
+      <li>Built the interactive Figma-equivalent prototype (fleet dashboard + alert flow, all 6 stages)</li>
+      <li>Wrote go-to-market strategy targeting operators via fuel station partnerships and logistics aggregators</li>
+    </ul>
+  </div>
+</div>
+
+<!-- APPROACH -->
+<div class="tab-panel" id="tab-approach">
+  <div class="cs-section">
+    <div class="cs-section-label">The Approach</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Market Sizing & Segment Selection</h4>
+        <p>India road freight is a $220B+ market dominated by ~1.5M small fleet operators (6–20 trucks). Larger operators already have enterprise tools. The small segment is underserved, price-sensitive, and solvable — they don't need a complex platform, they need one clear answer.</p>
+        <p style="margin-top: 10px;">I deliberately excluded medium fleet operators (20–100 trucks) from V1 — they have more complex needs (multi-depot, driver management, logistics integrations) that would have bloated the MVP scope.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Jobs-to-be-Done Prioritization</h4>
+        <p>Applied a JTBD lens to cut through the feature list. The primary job: <em>"prevent my truck from going off-road unexpectedly."</em> Secondary jobs — route optimization, driver scoring, fuel reporting — were real but not the reason operators would pay or switch.</p>
+        <p style="margin-top: 10px;">This shaped the MVP: everything in V1 serves the primary job. Secondary jobs are V2/V3.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>AI Workflow Design: Signal to Action in &lt;60 Seconds</h4>
+        <p>Most competitors offer GPS + reactive alerts — you find out after the breakdown. Fleet Guardian uses vehicle IoT telemetry + LSTM model to predict failures 48–72 hours ahead, then collapses all 7 manual workflow stages into one automated flow.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>RICE Prioritization</h4>
+        <p>Scored all candidate features against Reach, Impact, Confidence, Effort. Predictive maintenance topped the RICE table by a significant margin — highest confidence (validated by research), highest impact (primary job), clear engineering path via Bytebeam's existing telemetry stack.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">The Intelligence Engine — What Bytebeam Provides vs. What Fleet Guardian Adds</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Bytebeam (Unchanged)</h4>
+        <p>Raw telemetry ingestion from vehicle IoT sensors — engine temp, RPM, coolant pressure, GPS, fuel level. Real-time data streaming and storage.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Fleet Guardian AI Adds</h4>
+        <p>LSTM model on telemetry for failure prediction. Confidence scoring. Plain-language diagnosis. Ranked action options with cost quantification. Parallel action execution (driver + shipper + workshop). Post-event learning loop.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DESIGN -->
+<div class="tab-panel" id="tab-product">
+  <div class="cs-section">
+    <div class="cs-section-label">The End-to-End Workflow</div>
+    <p style="margin-bottom: 24px; color: #555550; font-size: 16px; line-height: 1.7;">
+      Fleet Guardian collapses the 7 manual stages into an automated, 6-step intelligent workflow —
+      from signal detection to learning in under 60 seconds.
+    </p>
+    <div class="workflow-steps">
+      <div class="workflow-step">
+        <div class="wf-num">1</div>
+        <div class="wf-content">
+          <h4>Signal Detection</h4>
+          <p>LSTM model runs continuously on all vehicle telemetry. A health score (0–100) is computed per truck every 5 minutes. When a truck's score drops sharply — e.g. TN09 AB 1234 drops from 71 to 38 in 15 minutes — an alert is triggered. The operator sees a fleet-level view: 10 trucks, 8 healthy, 1 watch, 1 act now.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="wf-num">2</div>
+        <div class="wf-content">
+          <h4>AI Insight — Plain Language Diagnosis</h4>
+          <p>The model surfaces a plain-language explanation of what it found, what it means, and what it costs to ignore. No raw telemetry. No charts to interpret. Example: "Engine cooling system showing early degradation. 72% probability of breakdown before reaching Pune — likely in the Khalapur ghat section. Estimated time to failure: 4–8 hours. Based on 847 similar events."</p>
+          <div style="margin-top: 16px;">
+            <div class="signal-bar">
+              <div class="signal-name">Engine temp trend</div>
+              <div class="signal-track"><div class="signal-fill red" style="width:85%"></div></div>
+              <div class="signal-val red">+18% above truck's baseline</div>
+            </div>
+            <div class="signal-bar">
+              <div class="signal-name">Coolant pressure</div>
+              <div class="signal-track"><div class="signal-fill red" style="width:75%"></div></div>
+              <div class="signal-val red">Dropping — 3hr trend</div>
+            </div>
+            <div class="signal-bar">
+              <div class="signal-name">RPM variance</div>
+              <div class="signal-track"><div class="signal-fill amber" style="width:60%"></div></div>
+              <div class="signal-val amber">Irregular since 11:20 AM</div>
+            </div>
+          </div>
+          <div class="cost-compare" style="margin-top: 16px;">
+            <div class="cost-box bad"><div class="cost-num">₹34,000</div><div class="cost-label">Est. cost if breakdown occurs<br>(repair + lost trip days)</div></div>
+            <div class="cost-box good"><div class="cost-num">₹3,800</div><div class="cost-label">Cost to service<br>preventively now</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="wf-num">3</div>
+        <div class="wf-content">
+          <h4>Decision — Ranked Options with Consequences</h4>
+          <p>The operator sees 3 options, AI-ranked: (1) Stop for service now at Sharma Auto, Khopoli — 12km ahead, 3–4hr turnaround, ₹3,800, trip delay ~4hr, Thursday buffer OK. (2) Complete trip, service at Pune — 72% breakdown risk, ₹34,000 if it fails. (3) Monitor — re-alert in 30 minutes. The operator decides. The AI never overrides.</p>
+          <div class="callout" style="margin-top: 16px;">
+            <div class="callout-label">Design Principle</div>
+            <p>The operator always has the final say — "you can always override." If they know something the AI doesn't (load urgency, driver feedback), they choose any option. Their decision improves future recommendations.</p>
+          </div>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="wf-num">4</div>
+        <div class="wf-content">
+          <h4>Action — 3 Notifications Fire in Parallel</h4>
+          <p>On approval, three actions execute simultaneously in under 60 seconds: (1) Driver notified via WhatsApp with location and slot confirmation. (2) Shipper auto-notified using pre-approved template ("TN09 AB 1234 delayed ~4hrs. New ETA: 6:30 PM. Precautionary maintenance stop."). (3) Workshop slot confirmed — Sharma Auto, 1:15 PM, Ref #SH2847.</p>
+          <p style="margin-top: 10px;">Financial decisions still require operator approval — Tier 2 autonomy boundary is explicit in the UI.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="wf-num">5</div>
+        <div class="wf-content">
+          <h4>Confirmation & Close</h4>
+          <p>Service complete: thermostat and coolant hose replaced, health score recovered to 82, truck departed Khopoli 4:10 PM, ETA Pune 6:25 PM — 5 minutes ahead of updated schedule. Outcome: ₹29,800 revenue protected, ₹4,200 repair cost, 3h 55m delay to shipper.</p>
+        </div>
+      </div>
+      <div class="workflow-step">
+        <div class="wf-num">6</div>
+        <div class="wf-content">
+          <h4>Learning — Model Improves After Every Event</h4>
+          <p>Three model improvements applied: (1) Coolant + RPM failure pattern labelled in LSTM training set — next detection of similar pattern triggers 2 hours earlier. (2) Sharma Auto stored with confirmed turnaround time and cost — surfaces first for future cooling issues on NH48. (3) Khalapur ghat tagged with 2× stress multiplier for summer overheating risk — all fleet trucks on this corridor get earlier alerts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">MVP Feature Set</div>
+    <div class="metric-grid-4">
+      <div class="mg-cell">
+        <div class="mg-val">🔧</div>
+        <div class="mg-label">Predictive Maintenance Alerts</div>
+      </div>
+      <div class="mg-cell">
+        <div class="mg-val">⛽</div>
+        <div class="mg-label">Fuel Anomaly Detection</div>
+      </div>
+      <div class="mg-cell">
+        <div class="mg-val">👤</div>
+        <div class="mg-label">Driver Behaviour Scoring</div>
+      </div>
+      <div class="mg-cell">
+        <div class="mg-val">📊</div>
+        <div class="mg-label">Fleet Health Dashboard</div>
+      </div>
+    </div>
+    <p style="color: var(--muted); font-size: 14px; margin-top: 8px;">Deliberately out of scope for MVP: route optimization (requires logistics partner integrations), multi-depot management, driver payroll, customer invoicing.</p>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Metrics Framework</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Product Metrics</h4>
+        <p>Alert accuracy rate. False positive rate (target: &lt;5%). Time from signal to operator action. Model confidence improvement over time.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Operational Metrics</h4>
+        <p>Breakdowns prevented per fleet per month. Fleet uptime %. Avg repair cost (preventive vs. reactive). Shipper satisfaction (auto-notification open rate).</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Business Metrics</h4>
+        <p>Revenue protected per fleet/month. Operator retention at 90 days. NPS. Expansion from freemium → paid (truck-count pricing).</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Monthly Example</h4>
+        <p>June 2025 (10-truck fleet): ₹94K revenue protected, 3 breakdowns prevented, fleet uptime improved 81% → 91%, 0 false positives, 1 dismissed alert led to avoidable ₹22K breakdown.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DECISIONS & RISKS -->
+<div class="tab-panel" id="tab-decisions">
+  <div class="cs-section">
+    <div class="cs-section-label">Key Decisions & Tradeoffs</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Predictive over reactive</h4>
+        <p>Harder to build, but the core differentiation. Reactive alerts are table stakes — every GPS vendor offers them. The 48–72hr prediction window is what makes the tool worth paying for.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>One health score, not a dashboard</h4>
+        <p>Small operators distrust complexity. Multiple charts and raw telemetry cause paralysis. A single health score (0–100) with drill-down on demand matched their mental model exactly.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Tier 2 autonomy — auto-notify, not auto-decide</h4>
+        <p>The shipper notification fires automatically on operator approval (pre-approved template). Financial approvals — workshop payment, trip cancellation — always require explicit confirmation. Trust is built incrementally.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Mobile-first dashboard</h4>
+        <p>Fleet operators manage on the go, often from WhatsApp. Desktop was secondary. Mobile-first also forced UI discipline — if it doesn't fit on a phone screen, it's too complex.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Deferred route optimization</h4>
+        <p>High complexity, requires integration with logistics partners and real-time mapping APIs. Not the primary job in V1. Adding it would have doubled build time and split operator focus from the core value prop.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Freemium with truck-count pricing</h4>
+        <p>Small operators are skeptical of new tools. Reducing upfront commitment to zero was critical for trial. Revenue scales naturally with fleet growth — alignment between operator success and product revenue.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Key Risks & Mitigations</div>
+    <table class="risk-table">
+      <tr>
+        <th>Risk</th>
+        <th>Severity</th>
+        <th>Mitigation</th>
+      </tr>
+      <tr>
+        <td>Model accuracy in early phase — false positives erode trust before operators see real value</td>
+        <td><span class="risk-sev high">High</span></td>
+        <td>Conservative confidence threshold (min 65%) before alert fires. Explicit confidence display in UI. Human-in-loop for first 30 days of each new operator.</td>
+      </tr>
+      <tr>
+        <td>Operator dismisses alerts — one dismissed alert led to ₹22K avoidable breakdown in the monthly example</td>
+        <td><span class="risk-sev high">High</span></td>
+        <td>Post-dismiss outcome logging. Monthly performance report shows "dismissed alert — led to breakdown" explicitly. Behavioural nudge, not a restriction.</td>
+      </tr>
+      <tr>
+        <td>IoT sensor gaps — incomplete, delayed, or incorrect data from vehicles</td>
+        <td><span class="risk-sev med">Medium</span></td>
+        <td>Designed explicit handling for all three data failure modes. Model trained on sparse data. Alert suppressed (not misfired) when confidence is below threshold.</td>
+      </tr>
+      <tr>
+        <td>Workshop network coverage — AI recommends a stop but no suitable workshop is nearby</td>
+        <td><span class="risk-sev med">Medium</span></td>
+        <td>Workshop network built progressively via partnerships. V1 limited to corridors with confirmed coverage. Coverage map shown to operator before alert fires.</td>
+      </tr>
+      <tr>
+        <td>Driver adoption — driver ignores WhatsApp notification to stop</td>
+        <td><span class="risk-sev med">Medium</span></td>
+        <td>Notification goes to both driver and operator. Operator has visibility into driver confirmation status. Follow-up alert if driver doesn't confirm in 10 minutes.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">What I'd Do Differently</div>
+    <div class="callout">
+      <div class="callout-label">Retrospective</div>
+      <p>The biggest design challenge was the autonomy tier decision — deciding what the AI executes automatically vs. what needs operator approval. I'd invest more time upfront in a structured autonomy framework and test it explicitly in research, rather than deriving it from first principles during design. Small operators have very different comfort levels with automation, and getting this wrong in either direction (too autonomous = distrust, too manual = no value) is a critical failure mode.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROTOTYPE -->
+<div class="tab-panel" id="tab-prototype">
+  <div class="cs-section" style="max-width: 100%;">
+    <div class="cs-section-label">Interactive Prototype</div>
+    <p style="color: #555550; font-size: 16px; line-height: 1.7; margin-bottom: 20px;">
+      The prototype walks through all 6 stages of the Fleet Guardian AI workflow — from detecting a critical alert on TN09 AB 1234 (Mumbai→Pune) through AI insight, decision, parallel action execution, outcome confirmation, and model learning. Click through each stage using the step navigator at the top.
+    </p>
+
+    <div class="prototype-wrap">
+      <div class="prototype-label">
+        <span>Fleet Guardian AI — Interactive Prototype · 6-stage workflow</span>
+        <a href="../Byetbeam Assignment/Fleet_Guardian_AI_Prototype.html" target="_blank">Open full screen ↗</a>
+      </div>
+      <iframe
+        class="prototype-frame"
+        src="../Byetbeam Assignment/Fleet_Guardian_AI_Prototype.html"
+        title="Fleet Guardian AI Prototype"
+      ></iframe>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; color: var(--muted); line-height: 1.6;">
+      <strong style="color: var(--text);">Scenario:</strong> Rajan Transport, 10-truck fleet. TN09 AB 1234 (Tata LPT 2518, Driver: Ramesh Kumar) is mid-trip Mumbai → Pune on NH48 — 68km from destination. Health score drops from 71 to 38 in 15 minutes. LSTM model flags engine cooling degradation with 72% breakdown probability. Follow the 6 steps to see how Fleet Guardian AI collapses the manual workflow into an automated, operator-in-loop response.
+    </div>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="tab-panel" id="tab-roadmap">
+  <div class="cs-section">
+    <div class="cs-section-label">Product Roadmap</div>
+    <p style="color: #555550; font-size: 16px; line-height: 1.7; margin-bottom: 24px;">
+      V1 is deliberately scoped to the primary job: prevent unplanned breakdowns. Each subsequent version adds a new primary job layer, not features.
+    </p>
+    <div class="roadmap-col">
+      <div class="roadmap-box">
+        <h4>Fleet Guardian AI</h4>
+        <div class="rv">Version 1 · Now</div>
+        <ul>
+          <li>Predictive maintenance alerts</li>
+          <li>Fuel anomaly detection</li>
+          <li>Driver behaviour scoring</li>
+          <li>Fleet health dashboard (one score)</li>
+          <li>Parallel action execution</li>
+          <li>Post-event learning loop</li>
+        </ul>
+      </div>
+      <div class="roadmap-box">
+        <h4>Fleet Intelligence</h4>
+        <div class="rv">Version 2 · 6–12 months</div>
+        <ul>
+          <li>Route optimization (primary corridors)</li>
+          <li>Multi-vehicle coordination</li>
+          <li>Logistics partner integrations</li>
+          <li>Expand workshop network</li>
+          <li>Adjacent segment: medium fleets (20–100 trucks)</li>
+          <li>Driver performance management</li>
+        </ul>
+      </div>
+      <div class="roadmap-box">
+        <h4>Fleet OS</h4>
+        <div class="rv">Version 3 · 12–24 months</div>
+        <ul>
+          <li>Full trip lifecycle management</li>
+          <li>Cargo and load optimization</li>
+          <li>Insurance integration (telematics-based pricing)</li>
+          <li>Fuel purchase optimization</li>
+          <li>Fleet financing (data-backed lending)</li>
+          <li>Pan-India workshop and fuel network</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Go-to-Market Strategy</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Fuel Station Partnerships (Primary Channel)</h4>
+        <p>Small fleet operators refuel at the same stations repeatedly. Partner with fuel station chains to offer Fleet Guardian AI as a value-add — operators see the product at a moment of high relevance (filling up before a long haul). Pilot with 3 high-traffic NH48 stations.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Logistics Aggregator Channel</h4>
+        <p>Platforms like Porter, Shiprocket, and Vahak have existing operator bases. White-label or referral arrangement — operators using these platforms can activate Fleet Guardian AI directly within the aggregator workflow.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Freemium to Paid Conversion</h4>
+        <p>Free tier: 1 truck, basic health score, no action execution. Paid tier: ₹3,000–5,000/truck/month, full workflow automation, workshop network access, monthly performance report. Conversion trigger: first prevented breakdown.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Pilot Plan</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Phase 1 — 3 Operators, NH48 Corridor</h4>
+        <p>10 trucks total. Focus on predictive maintenance only. Weekly check-ins. Measure: alert accuracy, operator response rate, false positives.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Phase 2 — 10 Operators, 3 Corridors</h4>
+        <p>Enable fuel anomaly detection. Add workshop network on target corridors. Measure: fuel savings vs. baseline, workshop turnaround, operator NPS.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>What Would Change the Product</h4>
+        <p>High false positive rate → raise confidence threshold, add signal validation step. Low operator response rate → redesign notification (SMS vs. WhatsApp). Workshop network gaps → prioritize coverage before scaling.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Kill Condition</h4>
+        <p>If model accuracy at 30 days is below 70% and trending flat, pause new operator onboarding and invest in data quality before scaling. Don't scale a broken prediction engine.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div style="padding: 60px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+  <a href="cs-funnel.html" style="font-size:15px; font-weight:600; color: var(--orange);">← Funnel Optimization</a>
+  <a href="index.html" style="font-size:15px; font-weight:600; color: var(--orange);">Back to all work →</a>
+</div>
+
+<footer>
+  <span>© 2024 Ankita Maiti</span>
+  <a href="index.html" style="color: var(--orange);">← Back to portfolio</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work">Work</a>
+    <a href="about.html" class="active">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<section style="padding: 140px 48px 60px;">
+  <div class="role-tag"><span class="role-dot"></span> About Me</div>
+  <h1 class="section-title" style="margin-top: 16px; margin-bottom: 40px;">
+    I combine data<br>with <em>ground truth.</em>
+  </h1>
+
+  <div class="about-grid">
+    <div>
+      <div class="about-text">
+        <p>
+          I'm a Senior Product Manager with 8 years of experience building products at the intersection
+          of AI, commerce, and operations. I've worked across Fidelity Investments, Tata Digital (Tata Neu),
+          and Hindustan Coca-Cola Beverages — from Wall Street analytics to rural kirana stores.
+        </p>
+        <p>
+          What sets me apart: I'm equally comfortable in a data room reviewing funnel drop-offs
+          and in the field with a truck driver testing a voice-based ordering system.
+          I don't outsource understanding — I go to the source.
+        </p>
+        <p>
+          I hold an MBA from the Indian School of Business (ISB), Hyderabad and a B.Tech in
+          Electronics & Communication Engineering from NIT Allahabad.
+        </p>
+        <p>
+          Currently based in Bengaluru, open to Senior PM roles in AI, commerce, and B2B SaaS —
+          hybrid or remote.
+        </p>
+      </div>
+
+      <!-- Education -->
+      <div style="margin-top: 48px;">
+        <div class="section-label" style="margin-bottom: 20px;">Education</div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Indian School of Business (ISB)</span>
+            <span class="exp-years">Hyderabad</span>
+          </div>
+          <div class="exp-role">MBA</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">NIT Allahabad</span>
+            <span class="exp-years">Allahabad</span>
+          </div>
+          <div class="exp-role">B.Tech · Electronics & Communication Engineering</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- Skills -->
+      <div class="section-label" style="margin-bottom: 20px;">What I Bring</div>
+      <div class="skills-grid">
+        <div class="skill-box">
+          <div class="skill-icon">🤖</div>
+          <div class="skill-title">AI / ML Product</div>
+          <div class="skill-desc">LLM-powered agents, voice AI, fleet intelligence</div>
+        </div>
+        <div class="skill-box">
+          <div class="skill-icon">📈</div>
+          <div class="skill-title">Growth & Commerce</div>
+          <div class="skill-desc">Funnel optimization, coupon strategy, B2B ecommerce</div>
+        </div>
+        <div class="skill-box">
+          <div class="skill-icon">🏗️</div>
+          <div class="skill-title">0→1 Product</div>
+          <div class="skill-desc">PRDs, prototypes, B2B SaaS, fleet tech</div>
+        </div>
+        <div class="skill-box">
+          <div class="skill-icon">📊</div>
+          <div class="skill-title">Data-Driven</div>
+          <div class="skill-desc">SQL, A/B testing, Snowflake, analytics pipelines</div>
+        </div>
+      </div>
+
+      <!-- Experience -->
+      <div class="experience" style="margin-top: 48px;">
+        <div class="section-label" style="margin-bottom: 20px;">Experience</div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Hindustan Coca-Cola Beverages</span>
+            <span class="exp-years">2023–2024</span>
+          </div>
+          <div class="exp-role">Senior Product Manager</div>
+          <div class="exp-note">AI Voice Agent · Dynamic Coupons · eB2B Platform</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Tata Digital · Tata Neu</span>
+            <span class="exp-years">2022</span>
+          </div>
+          <div class="exp-role">Product Manager · Growth</div>
+          <div class="exp-note">Electronics Funnel · Conversion Optimization</div>
+        </div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Fidelity Investments</span>
+            <span class="exp-years">Earlier</span>
+          </div>
+          <div class="exp-role">Product Manager</div>
+          <div class="exp-note">Financial technology · Analytics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2024 Ankita Maiti</span>
+  <a href="index.html#contact" style="color: var(--orange);">Get in touch →</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+</script>
+</body>
+</html>
