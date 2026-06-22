@@ -67,39 +67,40 @@
   <div class="cs-section">
     <div class="cs-section-label">The Problem</div>
     <p>
-      HCCB's field sales model depends on salespeople physically visiting retail outlets to take orders.
-      But coverage is finite — a salesperson can only visit so many outlets per day, and outlets in
-      low-density or remote areas often go unserved for days at a stretch.
+      In our eB2B retail distribution model, daily ordering heavily depends on salesmen visiting retailers physically.
+      However, there are two major operational gaps: salesman absenteeism and vacant sales routes. Together, these
+      were leading to significant missed retailer engagement and lost orders on a daily basis.
     </p>
     <p>
-      The result: lost orders, reduced retailer loyalty, and revenue leakage that was structurally
-      hard to address through headcount alone.
+      There are ways of recovery — such as the tele-sell team, RSU vehicles, and self-ordering app (Coke Buddy) —
+      but these are only able to recover 30% of the lost revenue. The tele-sell team has limited calling bandwidth
+      and hence is not able to cover all outlets which are at risk of lost sales.
     </p>
 
     <div class="callout">
-      <div class="callout-label">Key Insight</div>
-      <p>[X]% of uncovered outlets placed zero orders in off-visit weeks — confirming the coverage gap was causing lost revenue, not just delayed orders.</p>
+      <div class="callout-label">Hypothesis</div>
+      <p>Can we create an always-available, scalable, low-cost sales recovery layer that recovers otherwise lost revenue while maintaining acceptable unit economics?</p>
     </div>
   </div>
 
   <div class="cs-section">
     <div class="cs-section-label">My Role</div>
     <ul>
-      <li>Product owner for the end-to-end voice agent initiative — from problem framing to launch</li>
-      <li>Defined the LLM integration architecture alongside engineering and vendor teams</li>
-      <li>Led retailer research across [X] cities to validate voice-first ordering behaviour</li>
-      <li>Designed the agent conversation flow, fallback logic, and SKU disambiguation rules</li>
-      <li>Defined success metrics and ran post-launch analysis</li>
+      <li>Built the business case around the annual revenue leakage caused by field sales gaps, and how much of it can be recovered via an Agentic AI voice solution</li>
+      <li>Analysed tele-sell team call recordings to design the end-to-end call flow</li>
+      <li>Developed an LLM-powered voice agent by partnering with vendors for automated retailer order taking</li>
+      <li>Designed end-to-end agentic workflows powered by retailer context retrieval and product scheme look-up to enable conversational selling, objection-handling, and automated call-backs</li>
+      <li>Ran 3 competitive vendor pilots with definitive goals in a phased manner with a structured KPI framework; analysed call transcripts and no-order reasons to iteratively refine prompt strategies, agent decision trees, and escalation flows</li>
+      <li>Improved conversion rate 58% (6.0% → 9.5%) and AOV by 11%; developed unit economics projecting 30% annualised net revenue recovery</li>
     </ul>
   </div>
 
-  <!-- ✏️ Add your diagram/flow here -->
   <div class="cs-section">
-    <div class="cs-section-label">System Overview</div>
-    <div class="image-placeholder" onclick="alert('Click to replace with your flow diagram or architecture image')">
+    <div class="cs-section-label">High-Level Architecture</div>
+    <div class="image-placeholder" onclick="alert('Add your architecture diagram here')">
       <div class="image-placeholder-icon">🗺️</div>
-      <strong>Conversation Flow Diagram</strong>
-      <p>Replace this with your agent architecture or conversation flow diagram</p>
+      <strong>Agent Architecture Diagram</strong>
+      <p>Add your high-level architecture — retailer context retrieval, LLM call flow, OMS integration</p>
     </div>
   </div>
 </div>
