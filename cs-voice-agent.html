@@ -108,34 +108,83 @@
 <!-- APPROACH -->
 <div class="tab-panel" id="tab-approach">
   <div class="cs-section">
-    <div class="cs-section-label">The Approach</div>
+    <div class="cs-section-label">Approach Overview</div>
+    <p>I structured the pilots progressively. I first conducted a small pilot with one vendor to understand the problem and establish a baseline. After establishing a baseline, I conducted a second pilot with the same vendor — this time incorporating learnings from the first pilot to improve the workflow and validate whether it led to improved results. Once I had a richer understanding of the workflow from the second pilot, I went ahead with a third pilot evaluating additional vendors. In the fourth pilot, I moved into a structured optimization phase focused on conversion, AOV, and unit economics — an ongoing phase — with the selected vendor.</p>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">The Pilots</div>
     <div class="steps">
+
       <div class="step">
         <div class="step-num"></div>
-        <h4>Validating the Hypothesis</h4>
-        <p>Before committing to an AI solution, I ran structured interviews with field sales officers and retailers to confirm that voice was a viable channel — and that the drop-off in coverage was actually causing lost orders, not just delayed ones. Data confirmed [X]% of uncovered outlets placed zero orders in off-visit weeks.</p>
+        <h4>Stage 1 — Baseline Validation</h4>
+        <p>I started with a vendor because my first goal was to establish a baseline. I designed a simple order-taking workflow based on analysis of existing tele-sell conversations and tested whether retailers would:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>engage with an AI voice agent</li>
+          <li>trust the interaction</li>
+          <li>and place orders through the channel</li>
+        </ul>
+        <p>The first pilot helped us identify major friction points:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>retailer skepticism</li>
+          <li>stock already present</li>
+          <li>callback requests</li>
+          <li>and preference for ordering through salesmen</li>
+        </ul>
+        <p>At this stage, the biggest outcome wasn't conversion. It was learning.</p>
       </div>
+
       <div class="step">
         <div class="step-num"></div>
-        <h4>Designing the Agent</h4>
-        <p>The core challenge was designing a voice interaction that felt natural to a kirana retailer — not a tech-savvy user. I mapped the full conversation flow: greeting and authentication, catalogue browsing by category or SKU name, quantity confirmation, order summary, and final submit.</p>
-        <p style="margin-top:12px;">We built fallback logic for misheard SKU names (common brand names vs. formal SKU codes), multi-language support (Hindi + regional languages), and a human handoff trigger when confidence scores dropped below threshold.</p>
+        <h4>Stage 2 — Workflow Optimization</h4>
+        <p>After identifying the friction points in the first pilot, I designed an improved workflow that:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>removed unnatural phrases</li>
+          <li>introduced callback flows</li>
+          <li>added distributor context</li>
+          <li>incorporated past order history</li>
+          <li>and improved FAQ handling</li>
+        </ul>
+        <p>This led to an improvement in the funnel, particularly engaged-to-order conversion, which increased from 6.5% to 9%. More importantly, we generated a much richer understanding of retailer behaviour and conversation failure points.</p>
       </div>
+
       <div class="step">
         <div class="step-num"></div>
-        <h4>Integration and Rollout</h4>
-        <p>Worked with engineering to integrate the LLM backbone with HCCB's existing order management system. Ran a phased rollout starting with [X] pilot outlets, measuring conversion, order value, and error rates before scaling.</p>
+        <h4>Stage 3 — Benchmark Alternative Vendors</h4>
+        <p>Once I had a clearer picture of what a successful AI sales conversation required, I engaged additional vendors. By this stage, I had a much more mature evaluation framework. I knew we needed capabilities such as:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>skepticism handling</li>
+          <li>objection handling</li>
+          <li>callback management</li>
+          <li>contextual personalization</li>
+          <li>and transcript visibility</li>
+        </ul>
+        <p>Instead of evaluating generic AI capabilities, I evaluated each vendor against the specific retailer behaviours we had observed in earlier pilots.</p>
       </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Stage 4 — Deep-Dive with the Best Performer</h4>
+        <p>One vendor emerged as the strongest performer across conversion, conversation quality, and workflow flexibility. Rather than immediately scaling, I treated that as another learning phase. I designed a structured experimentation roadmap around:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>opening strategies</li>
+          <li>objection handling</li>
+          <li>basket expansion</li>
+          <li>and reducing non-productive call time</li>
+        </ul>
+        <p>The goal shifted from validating feasibility to optimising conversion, AOV, and cost-to-serve.</p>
+      </div>
+
     </div>
   </div>
 
-  <!-- ✏️ Add your conversation flow mock here -->
   <div class="cs-section">
     <div class="cs-section-label">Conversation Design</div>
     <div class="image-placeholder" onclick="alert('Replace with your conversation flow mock or wireframe')">
       <div class="image-placeholder-icon">💬</div>
-      <strong>Agent Conversation Flow Mock</strong>
-      <p>Add your Figma wireframe or conversation design here</p>
+      <strong>Agent Conversation Flow</strong>
+      <p>Add your call flow diagram or conversation design here</p>
     </div>
   </div>
 </div>
