@@ -312,13 +312,188 @@
 
 <!-- AI EVALUATION -->
 <div class="tab-panel" id="tab-evaluation">
-  <div style="width:100%; height:85vh;">
-    <iframe
-      src="ai_evaluation_framework.html"
-      style="width:100%; height:100%; border:1px solid var(--border); border-radius:12px; display:block;"
-      title="AI Evaluation Framework">
-    </iframe>
+
+  <style>
+    .ev-intro { font-size:16px; color:#555550; line-height:1.75; margin-bottom:32px; padding-bottom:28px; border-bottom:1px solid var(--border); }
+    .ev-layer { margin-bottom:40px; }
+    .ev-layer-header { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+    .ev-badge { background:var(--orange); color:#fff; font-size:10px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; padding:4px 12px; border-radius:20px; flex-shrink:0; }
+    .ev-layer-title { font-family:var(--serif); font-size:18px; font-weight:700; }
+    .ev-layer-desc { font-size:14px; color:#555550; line-height:1.7; margin-bottom:14px; }
+    .ev-table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); margin-bottom:16px; }
+    .ev-table { width:100%; border-collapse:collapse; font-size:14px; background:var(--bg-card); }
+    .ev-table thead tr { background:#1E293B; color:#fff; }
+    .ev-table thead th { padding:11px 16px; text-align:left; font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; }
+    .ev-table tbody tr { border-bottom:1px solid var(--border); }
+    .ev-table tbody tr:last-child { border-bottom:none; }
+    .ev-table tbody tr:nth-child(even) { background:#faf9f7; }
+    .ev-table tbody td { padding:11px 16px; color:#555550; vertical-align:top; line-height:1.5; }
+    .ev-table tbody td:first-child { font-weight:600; color:var(--text); }
+    .ev-num { color:var(--orange) !important; font-weight:700 !important; width:32px; text-align:center; }
+    .ev-target { font-weight:700; color:var(--text); }
+    .ev-buckets { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+    .ev-bucket { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+    .ev-bucket-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .ev-bucket-engaged .ev-bucket-title { color:#166534; }
+    .ev-bucket-not .ev-bucket-title { color:#991B1B; }
+    .ev-bucket-item { font-size:13px; color:#555550; padding:3px 0; display:flex; align-items:flex-start; gap:6px; }
+    .ev-bucket-item::before { content:"·"; color:var(--orange); font-weight:700; flex-shrink:0; }
+    .ev-callout { background:var(--bg-card); border:1px solid var(--border); border-left:4px solid var(--orange); border-radius:8px; padding:16px 20px; margin-bottom:16px; }
+    .ev-callout-title { font-size:11px; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+    .ev-callout-body { font-size:14px; color:#555550; line-height:1.65; }
+    .ev-scoring { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:20px 24px; margin-top:16px; }
+    .ev-scoring-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:6px; }
+    .ev-utterance { font-size:14px; font-style:italic; color:#555550; margin-bottom:14px; padding:10px 14px; background:var(--bg); border-radius:6px; border-left:3px solid var(--orange); }
+    .ev-rubric-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+    .ev-rubric-row:last-of-type { border-bottom:none; }
+    .ev-score-1 { font-weight:700; color:#166534; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:4px; padding:2px 10px; font-size:12px; }
+    .ev-score-0 { font-weight:700; color:#991B1B; background:#FEF2F2; border:1px solid #FECACA; border-radius:4px; padding:2px 10px; font-size:12px; }
+    .ev-rubric-total { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:2px solid var(--border); font-weight:700; font-size:14px; }
+    .ev-rubric-total-score { color:var(--orange); font-size:16px; }
+    .ev-rubric-insight { font-size:13px; color:#888884; font-style:italic; margin-top:8px; line-height:1.5; }
+    .ev-closing { background:#1E293B; color:#fff; border-radius:12px; padding:24px 28px; margin-top:16px; }
+    .ev-closing-title { font-family:var(--serif); font-size:16px; font-weight:700; margin-bottom:10px; }
+    .ev-closing-body { font-size:14px; color:rgba(255,255,255,0.8); line-height:1.7; }
+    .ev-divider { height:1px; background:var(--border); margin:32px 0; }
+  </style>
+
+  <p class="ev-intro">
+    Evaluating a conversational AI system is fundamentally different from evaluating traditional software. There are no pass/fail unit tests. The agent's output is language — contextual, adaptive, and often ambiguous. Standard quantitative metrics like accuracy or F1 score don't capture what matters: did the agent sell well, handle an objection gracefully, or recover a skeptical retailer? My evaluation approach was two-layered — <strong>business metrics</strong> to track commercial outcomes, and <strong>call quality metrics</strong> assessed through a qualitative binary scoring framework, grounded in a golden dataset of real retailer scenarios.
+  </p>
+
+  <!-- LAYER 1 -->
+  <div class="ev-layer">
+    <div class="ev-layer-header">
+      <span class="ev-badge">Layer 1</span>
+      <span class="ev-layer-title">Business & Operational Metrics</span>
+    </div>
+    <p class="ev-layer-desc">Top-line metrics tracked at the call level to measure commercial performance of the AI system.</p>
+    <div class="ev-table-wrap">
+      <table class="ev-table">
+        <thead><tr><th class="ev-num">#</th><th>Metric</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td class="ev-num">1</td><td>Order Conversion Rate</td><td>Number of orders successfully taken by AI from retailers</td></tr>
+          <tr><td class="ev-num">2</td><td>Average Order Value (AOV)</td><td>Order value per AI-assisted transaction</td></tr>
+          <tr><td class="ev-num">3</td><td>Average Handle Time (AHT)</td><td>Total call duration between AI agent and retailer</td></tr>
+          <tr><td class="ev-num">4</td><td>Call Pickup Rate</td><td>Calls picked up ÷ calls triggered</td></tr>
+          <tr><td class="ev-num">5</td><td>Call Engagement Rate</td><td>Engaged calls (&gt;10s) ÷ calls picked up</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ev-layer-desc" style="margin-top:14px;">Engaged calls were bucketed to understand why calls succeeded or failed:</p>
+    <div class="ev-buckets">
+      <div class="ev-bucket ev-bucket-engaged">
+        <div class="ev-bucket-title">✓ Engaged Calls (&gt;10s)</div>
+        <div class="ev-bucket-item">Stock present</div>
+        <div class="ev-bucket-item">Already ordered on other source</div>
+        <div class="ev-bucket-item">Service issue raised</div>
+        <div class="ev-bucket-item">Schemes communicated but not convinced</div>
+        <div class="ev-bucket-item">Schemes not communicated</div>
+      </div>
+      <div class="ev-bucket ev-bucket-not">
+        <div class="ev-bucket-title">✗ Non-Engaged Calls (&lt;10s)</div>
+        <div class="ev-bucket-item">Retailer busy / unavailable</div>
+        <div class="ev-bucket-item">Disconnected due to suspicion</div>
+        <div class="ev-bucket-item">Network issue</div>
+        <div class="ev-bucket-item">No response</div>
+      </div>
+    </div>
   </div>
+
+  <div class="ev-divider"></div>
+
+  <!-- LAYER 2 -->
+  <div class="ev-layer">
+    <div class="ev-layer-header">
+      <span class="ev-badge">Layer 2</span>
+      <span class="ev-layer-title">Call Quality Metrics — Binary Scoring</span>
+    </div>
+    <p class="ev-layer-desc">For qualitative evaluation, I built a framework around a golden dataset and binary scoring — assessing not just whether the agent responded, but whether it responded correctly at each critical moment of the call.</p>
+
+    <div class="ev-callout">
+      <div class="ev-callout-title">The Golden Dataset</div>
+      <div class="ev-callout-body">A curated set of representative call scenarios — each defined by scenario type, the retailer's utterance as it would naturally occur on a call, and the expected agent behaviour. The dataset covers the highest-frequency and highest-stakes moments in the call, not every possible retailer utterance.</div>
+    </div>
+
+    <div class="ev-table-wrap">
+      <table class="ev-table">
+        <thead><tr><th>Scenario</th><th>Retailer Utterance</th><th>Expected Behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>Stock Present</td><td><em>"I already have stock"</em></td><td>Acknowledge + pitch alternate SKU</td></tr>
+          <tr><td>Salesman Preference</td><td><em>"I only give orders to my salesman"</em></td><td>Build trust + low-risk pitch</td></tr>
+          <tr><td>Busy</td><td><em>"I don't have time right now"</em></td><td>Trigger callback flow</td></tr>
+          <tr><td>Service Issue</td><td><em>"The cooler is broken"</em></td><td>Log complaint + return to order flow</td></tr>
+          <tr><td>Skepticism</td><td><em>"Who is this calling?"</em></td><td>Trigger authenticity response</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="ev-layer-desc" style="margin-top:20px;">Each call was evaluated across 10 quality metrics, scored 0 or 1 per rubric item:</p>
+
+    <div class="ev-table-wrap">
+      <table class="ev-table">
+        <thead><tr><th class="ev-num">#</th><th>Call Quality Metric</th><th>Measured By</th></tr></thead>
+        <tbody>
+          <tr><td class="ev-num">1</td><td>Greeting / Introduction</td><td>Conversation moved to the next stage</td></tr>
+          <tr><td class="ev-num">2</td><td>Retailer Verification</td><td>Explicit confirmation provided by retailer</td></tr>
+          <tr><td class="ev-num">3</td><td>Product & Scheme Pitching</td><td>Retailer demonstrates understanding — acknowledges, asks follow-up questions, or responds meaningfully. Pitch is relevant to retailer profile, not generic.</td></tr>
+          <tr><td class="ev-num">4</td><td>Service Request Handling</td><td>Agent acknowledges the issue, responds politely, provides correct guidance, and maintains conversational flow without derailing the call</td></tr>
+          <tr><td class="ev-num">5</td><td>Persuasion Effectiveness</td><td>Agent successfully pivots when retailer has stock, refuses to order, or is only interested in complaining</td></tr>
+          <tr><td class="ev-num">6</td><td>Skepticism Handling</td><td>Agent answers distributor, pricing, and delivery questions confidently; retailer continues without hesitation</td></tr>
+          <tr><td class="ev-num">7</td><td>Order Validation</td><td>Agent confirms SKUs, quantities, and changes before placing; retailer explicitly agrees</td></tr>
+          <tr><td class="ev-num">8</td><td>Order Value Communication</td><td>Agent communicates total order value clearly and accurately</td></tr>
+          <tr><td class="ev-num">9</td><td>Call Closing</td><td>Agent summarises next steps, thanks retailer, and ends smoothly — no abrupt ending</td></tr>
+          <tr><td class="ev-num">10</td><td>Latency</td><td>Response time measured in milliseconds from retailer end-of-speech to agent speech start</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ev-callout" style="margin-top:20px;">
+      <div class="ev-callout-title">Why Binary, Not Likert</div>
+      <div class="ev-callout-body">A Likert scale (0–5) introduces subjectivity at exactly the wrong moment. Consider the stock objection scenario: how do you score a 3 out of 5? Did the agent partially acknowledge? Somewhat pivot? The ambiguity makes scores inconsistent across evaluators and impossible to act on. Binary scoring forces precision — every rubric item is a specific, observable behaviour, which converts evaluation into a debugging tool.</div>
+    </div>
+
+    <div class="ev-scoring">
+      <div class="ev-scoring-title">Example — Stock Present Scenario</div>
+      <div class="ev-utterance">Retailer: "I already have stock."</div>
+      <div class="ev-rubric-row"><span>AI recognised stock objection</span><span class="ev-score-1">1</span></div>
+      <div class="ev-rubric-row"><span>AI acknowledged objection</span><span class="ev-score-1">1</span></div>
+      <div class="ev-rubric-row"><span>AI communicated active scheme</span><span class="ev-score-1">1</span></div>
+      <div class="ev-rubric-row"><span>AI attempted alternate pitch</span><span class="ev-score-0">0</span></div>
+      <div class="ev-rubric-total"><span>Total Score</span><span class="ev-rubric-total-score">3 / 4 = 75%</span></div>
+      <div class="ev-rubric-insight">A 75% score tells you exactly where the failure occurred — the agent recognised and acknowledged the objection and surfaced a scheme, but didn't attempt an alternate pitch. That's a specific prompt engineering fix, not a vague quality problem.</div>
+    </div>
+  </div>
+
+  <div class="ev-divider"></div>
+
+  <!-- LAYER 3 -->
+  <div class="ev-layer">
+    <div class="ev-layer-header">
+      <span class="ev-badge">Layer 3</span>
+      <span class="ev-layer-title">System-Level SLA Targets</span>
+    </div>
+    <p class="ev-layer-desc">Beyond call quality, the system was evaluated against technical SLAs — with separate targets for pilot and full production. The split was intentional: at pilot stage, the priority was proving conversion and learning failure modes. Tightening SLAs progressively as confidence in the system grows is the right sequencing.</p>
+    <div class="ev-table-wrap">
+      <table class="ev-table">
+        <thead><tr><th>Metric</th><th>Definition</th><th>Pilot Target</th><th>Production Target</th></tr></thead>
+        <tbody>
+          <tr><td>Word Error Rate (WER)</td><td>% of words incorrectly transcribed by the STT system in real retail audio conditions</td><td class="ev-target">≤ 10%</td><td class="ev-target">≤ 6–7%</td></tr>
+          <tr><td>Intent Accuracy</td><td>% of retailer utterances correctly mapped to the right intent by the agent</td><td class="ev-target">≥ 80%</td><td class="ev-target">≥ 90%</td></tr>
+          <tr><td>Transaction Accuracy</td><td>% of orders executed with correct SKU, quantity, and price</td><td class="ev-target">≥ 95%</td><td class="ev-target">≥ 98%</td></tr>
+          <tr><td>Task Containment</td><td>% of calls completed end-to-end without human handoff or escalation</td><td class="ev-target">≥ 70%</td><td class="ev-target">≥ 85%</td></tr>
+          <tr><td>Turn Latency (avg)</td><td>Time from retailer end-of-speech to agent speech start</td><td class="ev-target">&lt; 3.5s</td><td class="ev-target">&lt; 2.5s</td></tr>
+          <tr><td>Hallucination Rate</td><td>% of AI-generated statements that are fabricated, misleading, or factually incorrect</td><td class="ev-target">≤ 0.5%</td><td class="ev-target">≤ 0.1% for financial statements</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ev-closing">
+    <div class="ev-closing-title">Why This Approach Works for Agentic Systems</div>
+    <div class="ev-closing-body">Traditional ML evaluation assumes a fixed input-output mapping. Agentic systems don't — the agent's response depends on conversation history, retailer tone, retrieved context, and current call state. Aggregate accuracy metrics obscure where in the workflow things break down. The combination of a golden dataset, binary rubrics, and sequence-level scoring solves this: each step of the workflow is independently scored, which means you can identify that the Pitch Agent performs well but the Objection Handler consistently fails to attempt an alternate pitch. That's the granularity needed to improve a multi-agent system systematically.</div>
+  </div>
+
 </div>
 
 <!-- SCALING STRATEGY -->
