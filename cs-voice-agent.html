@@ -56,6 +56,7 @@
   <div class="tab-list">
     <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
     <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
+    <button class="tab-btn" onclick="switchTab('workflow', this)">Workflow Design</button>
     <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
     <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
     <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
@@ -175,14 +176,139 @@
     </div>
   </div>
 
+</div>
+
+<!-- WORKFLOW DESIGN -->
+<div class="tab-panel" id="tab-workflow">
+
   <div class="cs-section">
-    <div class="cs-section-label">Conversation Design</div>
-    <div class="image-placeholder" onclick="alert('Replace with your conversation flow mock or wireframe')">
-      <div class="image-placeholder-icon">💬</div>
-      <strong>Agent Conversation Flow</strong>
-      <p>Add your call flow diagram or conversation design here</p>
+    <div class="cs-section-label">The Big Idea — Why "Multi-Agent"?</div>
+    <p>A single AI agent trying to do everything — verify the retailer, pitch products, handle complaints, manage objections, close the call — becomes very hard to build, test, and improve. Each task requires different context, different logic, and different failure modes.</p>
+    <p>The multi-agent approach breaks the call into specialist agents, each owning one job. The Orchestrator sits above them all and decides which agent should be active at any moment — like a call center supervisor routing between specialists.</p>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Layer 1 — The Orchestrator</div>
+    <p>Think of this as the "brain" of the system. It:</p>
+    <ul>
+      <li>Maintains the state of the conversation at all times — what stage are we at, what has been said, what has been agreed</li>
+      <li>Listens to every turn of the conversation and decides: should I stay in the current agent, or hand off to another?</li>
+      <li>Passes context between agents — so when Pitch Agent takes over from Intro Agent, it already knows the retailer's name, tone, and what was said</li>
+    </ul>
+    <div class="callout" style="margin-top: 20px;">
+      <div class="callout-label">Key Principle</div>
+      <p>The Orchestrator never speaks to the retailer directly. It only routes.</p>
     </div>
   </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Layer 2 — The Linear Flow (a normal call)</div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 1 — Verification</h4>
+        <p>The call connects. The first thing the system does is confirm it's speaking to the right store. It asks: "Am I speaking with Store X?" It checks the response against the Retailer DB — store name, owner name, phone number. Two outcomes: verified (proceed) or wrong store (hand off to Wrong Store interrupt agent, close gracefully).</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 2 — Intro</h4>
+        <p>Once verified, the Intro Agent takes over. It explains why it's calling — "Your salesman is absent today, so I've called to take your order." Then it warms up the conversation — asks how business is, how sales have been. This does two things: builds rapport so the retailer doesn't feel like they're talking to a cold bot, and reads the retailer's tone. Is the retailer engaged? Busy? Irritated? The Orchestrator picks up these signals and decides whether to proceed to pitch, or hand off to an interrupt agent.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 3 — Pitch</h4>
+        <p>This is the core of the call. The Pitch Agent does two things before opening its mouth:</p>
+        <ul style="margin: 12px 0 16px;">
+          <li>Pulls the retailer's past order history to know what they typically buy — and leads with those SKUs because that's what the retailer already wants</li>
+          <li>Checks active schemes and offers and surfaces the most attractive ones relevant to this retailer's category</li>
+        </ul>
+        <p>Then it asks about stock. The retailer's answer determines which path the call takes next.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 4A / 4B — Stock Handling (where it gets intelligent)</h4>
+        <p><strong>If the retailer says "I have stock"</strong> — the system doesn't give up. Agent 4A (Stock Agent) asks specifically what they have, cross-references it against their usual order basket, and identifies what's missing. "I see you usually order Thums Up 2L — are you running low on that?" This is targeted, not generic.</p>
+        <p style="margin-top: 12px;"><strong>If the retailer says they have everything</strong> — Agent 4B (AOV Agent) pivots to low-AOV products: small packs, impulse SKUs, new launches. It also tries alternate pitch angles — scheme urgency ("this offer ends Friday"), social proof ("the store next to you just picked up 20 cases"). If nothing works, it moves gracefully toward close rather than pushing.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 5 — Order Confirmation</h4>
+        <p>Once the basket is built, the Order Agent reads it back to the retailer — every SKU, every quantity, every scheme applied. Gets explicit confirmation. Then places the order in the Order Management System and shares an order reference number. This step creates a paper trail and prevents disputes.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Agent 6 — Close</h4>
+        <p>The Close Agent thanks the retailer, mentions expected delivery, and ends the call warmly. It also logs the full call outcome to the CRM — what was ordered, what schemes were applied, any flags raised during the call.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Layer 3 — The Interrupt Agents (when the call goes sideways)</div>
+    <p>These agents can fire at any point in the conversation. The Orchestrator is always listening for trigger signals.</p>
+    <div class="tradeoffs" style="margin-top: 24px;">
+      <div class="tradeoff-card">
+        <h4>Wrong Store Agent</h4>
+        <p>Fires during verification if the person who picks up isn't the right retailer. Apologises, closes politely, logs as wrong number.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Callback Agent</h4>
+        <p>Fires if the retailer says they're busy at any point. Doesn't push. Asks when would be a good time, schedules a callback, closes the call. The system will then auto-dial at the scheduled time.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Service Request Agent</h4>
+        <p>Fires if the retailer raises a complaint — cooler not working, delivery didn't arrive, damaged goods. Acknowledges empathetically first, looks up the Service FAQs DB, raises a service ticket — and critically returns to the pitch flow after handling the complaint. The complaint doesn't end the call.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Objection Handler Agent</h4>
+        <p>Fires during the pitch if the retailer pushes back. "Your competitor is cheaper." "I don't need that SKU." "Last time quality was bad." Has pre-trained responses for common objections, can surface a relevant scheme to counter a price objection, and hands back to the Pitch Agent once resolved.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Skepticism Handler Agent</h4>
+        <p>Fires when a retailer questions the legitimacy of the call — "Who are you? Why is a bot calling me?" Rather than explaining itself abstractly, it builds trust by surfacing specific account details the retailer recognises: their distributor name, last order date, and SKUs ordered. A retailer who hears their own order history reflected back immediately understands this is a legitimate call. Once trust is established, the Orchestrator returns to wherever the conversation was.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Layer 4 — The Context Databases</div>
+    <p>All agents draw from the same three databases — they don't re-fetch independently. The Orchestrator passes the relevant context to whichever agent is active.</p>
+    <div class="tradeoffs" style="margin-top: 24px;">
+      <div class="tradeoff-card">
+        <h4>Retailer Context</h4>
+        <p>Who they are, what they've ordered before, how often, their category, credit terms.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Business Context</h4>
+        <p>What SKUs exist, what the current pricing is, what schemes are active.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Operational Context</h4>
+        <p>Inventory levels, delivery timelines, distributor mapping, service FAQs, policies.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top: 28px;">
+      <div class="callout-label">What makes this "agentic"</div>
+      <p>The system isn't following a rigid script. At each turn, the Orchestrator interprets what the retailer said, decides what it means, and chooses the right next action — staying in the current agent, handing off to a specialist, or firing an interrupt. It's goal-directed (place the order) but adaptive (handles anything the retailer throws at it).</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Workflow Diagram</div>
+    <div class="image-placeholder" onclick="alert('Add your multi-agent workflow diagram here')">
+      <div class="image-placeholder-icon">🗺️</div>
+      <strong>Multi-Agent Workflow Diagram</strong>
+      <p>Add your agent flow diagram showing orchestrator routing, linear flow, and interrupt agents</p>
+    </div>
+  </div>
+
 </div>
 
 <!-- DECISIONS -->
