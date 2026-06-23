@@ -552,9 +552,16 @@
 </div>
 
 <!-- NAV -->
-<div style="padding: 60px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
-  <a href="cs-funnel.html" style="font-size:15px; font-weight:600; color: var(--orange);">← Funnel Optimization</a>
-  <a href="index.html" style="font-size:15px; font-weight:600; color: var(--orange);">Back to all work →</a>
+<div style="padding: 32px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div id="nav-prev-tab" style="display:none;">
+      <a href="#" onclick="navTab(-1); return false;" style="font-size:14px; font-weight:600; color: var(--orange);">← <span id="prev-tab-name"></span></a>
+    </div>
+    <div id="nav-next-tab" style="display:none;">
+      <a href="#" onclick="navTab(1); return false;" style="font-size:14px; font-weight:600; color: var(--orange);"><span id="next-tab-name"></span> →</a>
+    </div>
+  </div>
+  <a href="index.html#work" style="font-size:14px; font-weight:600; color:#888; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px;">← Back to all work</a>
 </div>
 
 <footer>
@@ -565,13 +572,41 @@
 <script>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  const TABS = ['overview','approach','product','decisions','prototype','roadmap'];
+  const TAB_NAMES = {
+    overview: 'Overview', approach: 'Approach', product: 'Product Design',
+    decisions: 'Decisions & Risks', prototype: 'Live Prototype', roadmap: 'Roadmap'
+  };
+  let currentTabIndex = 0;
+
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
+    currentTabIndex = TABS.indexOf(id);
+    updatePageNav();
     window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
   }
+
+  function navTab(dir) {
+    const newIndex = currentTabIndex + dir;
+    if (newIndex < 0 || newIndex >= TABS.length) return;
+    const btn = document.querySelectorAll('.tab-btn')[newIndex];
+    switchTab(TABS[newIndex], btn);
+  }
+
+  function updatePageNav() {
+    const hasPrev = currentTabIndex > 0;
+    const hasNext = currentTabIndex < TABS.length - 1;
+    document.getElementById('nav-prev-tab').style.display = hasPrev ? 'block' : 'none';
+    document.getElementById('nav-next-tab').style.display = hasNext ? 'block' : 'none';
+    if (hasPrev) document.getElementById('prev-tab-name').textContent = TAB_NAMES[TABS[currentTabIndex - 1]];
+    if (hasNext) document.getElementById('next-tab-name').textContent = TAB_NAMES[TABS[currentTabIndex + 1]];
+  }
+
+  updatePageNav();
 </script>
 </body>
 </html>
