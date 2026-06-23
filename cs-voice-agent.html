@@ -56,9 +56,7 @@
     <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
     <button class="tab-btn" onclick="switchTab('approach', this)">Approach</button>
     <button class="tab-btn" onclick="switchTab('workflow', this)">Workflow Design</button>
-    <button class="tab-btn" onclick="switchTab('decisions', this)">Decisions & Tradeoffs</button>
-    <button class="tab-btn" onclick="switchTab('results', this)">Results</button>
-    <button class="tab-btn" onclick="switchTab('artifacts', this)">Artifacts</button>
+    <button class="tab-btn" onclick="switchTab('scaling', this)">Scaling Strategy</button>
   </div>
 </div>
 
@@ -311,88 +309,195 @@
 
 </div>
 
-<!-- DECISIONS -->
-<div class="tab-panel" id="tab-decisions">
+<!-- SCALING STRATEGY -->
+<div class="tab-panel" id="tab-scaling">
+
   <div class="cs-section">
-    <div class="cs-section-label">Key Decisions & Tradeoffs</div>
-    <div class="tradeoffs">
-      <div class="tradeoff-card">
-        <h4>Voice-first over app-first</h4>
-        <p>Retailers in coverage gaps often had low smartphone literacy; voice reduced friction substantially. An app would have required onboarding, downloads, and data literacy.</p>
-      </div>
-      <div class="tradeoff-card">
-        <h4>Built fallback to human agent</h4>
-        <p>Maintaining trust in the AI required a clear escape hatch. This also helped us collect failure cases for model improvement — invaluable early signal.</p>
-      </div>
-      <div class="tradeoff-card">
-        <h4>Constrained SKU catalogue intentionally</h4>
-        <p>Started with top 80% revenue SKUs to reduce ambiguity in voice recognition. Full catalogue would have increased disambiguation errors by an estimated [X]x.</p>
-      </div>
-      <div class="tradeoff-card">
-        <h4>Phased rollout over big-bang</h4>
-        <p>Starting with [X] pilot outlets gave us real error rates and retailer feedback before scaling. Slower to start, but prevented a poor experience at scale.</p>
-      </div>
-    </div>
+    <div class="cs-section-label">Cost Optimization via Model Selection</div>
+    <p>During the pilot, the system ran on a single LLM across all agents — the right call when you're at 300–400 calls a day and focused on proving conversion. At that stage, consistency and quality matter more than cost efficiency. We got that signal: conversion uplift of 58% across pilots, AOV up 11%.</p>
+    <p style="margin-top:14px;">But full-scale deployment changes the equation entirely. At 8,000–9,000 calls a day, a uniform LLM approach becomes expensive fast — and most of that cost is wasted on tasks that don't need heavy reasoning.</p>
   </div>
 
   <div class="cs-section">
-    <div class="cs-section-label">What I'd Do Differently</div>
     <div class="callout">
-      <div class="callout-label">Retrospective</div>
-      <p>I'd involve retailers earlier in the conversation flow design — we iterated more than expected on SKU disambiguation because we underestimated how locally-named products are in practice ("Thums Up" vs. "Cola 200ml"). Earlier co-design sessions would have reduced this.</p>
+      <div class="callout-label">The Principle</div>
+      <p><strong>Pay for intelligence only where it earns revenue.</strong> Not all agents are equal. Some require nuanced reasoning, contextual judgment, and adaptive language — these directly determine whether a retailer places an order. Others are structured, predictable, and largely scripted. The optimization is matching model capability to task complexity.</p>
     </div>
   </div>
-</div>
 
-<!-- RESULTS -->
-<div class="tab-panel" id="tab-results">
   <div class="cs-section">
-    <div class="cs-section-label">Results</div>
-    <ul>
-      <li>[X]% lift in retailer order conversion in the pilot zone</li>
-      <li>Average order value of ₹[X] per voice session — comparable to in-person visits</li>
-      <li>Expanded effective coverage to [X]K outlets without adding headcount</li>
-      <li>Error rate below [X]% at steady state</li>
-    </ul>
+    <div class="cs-section-label">Tiered Model Selection</div>
+    <div style="overflow-x:auto; margin-top:8px;">
+      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);">
+            <th style="text-align:left; padding:12px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Agent</th>
+            <th style="text-align:left; padding:12px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Task</th>
+            <th style="text-align:left; padding:12px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Model Tier</th>
+            <th style="text-align:left; padding:12px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:12px 16px; font-weight:500;">Orchestrator</td>
+            <td style="padding:12px 16px; color:#555550;">State management, intent routing</td>
+            <td style="padding:12px 16px;"><span style="background:#fde8dc; color:var(--orange); font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Large</span></td>
+            <td style="padding:12px 16px; color:#555550;">Every routing decision affects call outcome</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:500;">Pitch Agent</td>
+            <td style="padding:12px 16px; color:#555550;">Personalised product pitch</td>
+            <td style="padding:12px 16px;"><span style="background:#fde8dc; color:var(--orange); font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Large</span></td>
+            <td style="padding:12px 16px; color:#555550;">Open-ended, context-heavy, revenue-critical</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:12px 16px; font-weight:500;">Objection Handler</td>
+            <td style="padding:12px 16px; color:#555550;">Nuanced counter-arguments</td>
+            <td style="padding:12px 16px;"><span style="background:#fde8dc; color:var(--orange); font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Large</span></td>
+            <td style="padding:12px 16px; color:#555550;">Unpredictable inputs, high-stakes responses</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:500;">Skepticism Handler</td>
+            <td style="padding:12px 16px; color:#555550;">Trust building via account details</td>
+            <td style="padding:12px 16px;"><span style="background:#e8eef8; color:#1565c0; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Mid</span></td>
+            <td style="padding:12px 16px; color:#555550;">Empathy + retrieval, not open-ended reasoning</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:12px 16px; font-weight:500;">Service Request</td>
+            <td style="padding:12px 16px; color:#555550;">Complaint handling + FAQ lookup</td>
+            <td style="padding:12px 16px;"><span style="background:#e8eef8; color:#1565c0; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Mid</span></td>
+            <td style="padding:12px 16px; color:#555550;">Retrieval-first, LLM composes the wrapper</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:500;">Intro Agent</td>
+            <td style="padding:12px 16px; color:#555550;">Rapport building, tone reading</td>
+            <td style="padding:12px 16px;"><span style="background:#e8eef8; color:#1565c0; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Mid</span></td>
+            <td style="padding:12px 16px; color:#555550;">Moderate context, limited variability</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:12px 16px; font-weight:500;">Verification</td>
+            <td style="padding:12px 16px; color:#555550;">Identity confirmation</td>
+            <td style="padding:12px 16px;"><span style="background:#eef5ee; color:#2e7d32; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Small</span></td>
+            <td style="padding:12px 16px; color:#555550;">Binary outcome, structured input</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:500;">Order Confirmation</td>
+            <td style="padding:12px 16px; color:#555550;">Basket readback + OMS placement</td>
+            <td style="padding:12px 16px;"><span style="background:#eef5ee; color:#2e7d32; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Small</span></td>
+            <td style="padding:12px 16px; color:#555550;">Structured, templated, no creativity needed</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:12px 16px; font-weight:500;">Callback Agent</td>
+            <td style="padding:12px 16px; color:#555550;">Time extraction + scheduling</td>
+            <td style="padding:12px 16px;"><span style="background:#eef5ee; color:#2e7d32; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Small</span></td>
+            <td style="padding:12px 16px; color:#555550;">Slot-filling task</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 16px; font-weight:500;">Wrong Store / Close</td>
+            <td style="padding:12px 16px; color:#555550;">Graceful exit scripts</td>
+            <td style="padding:12px 16px;"><span style="background:#f3f3f3; color:#666; font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px; text-transform:uppercase;">Rule-based</span></td>
+            <td style="padding:12px 16px; color:#555550;">Fixed outputs, minimal reasoning needed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px; font-size:13px; color:var(--muted);">Recommended stack: GPT-4o for large tier · GPT-4o mini for small tier · GPT-4o or equivalent for mid tier with retrieval augmentation</p>
   </div>
 
-  <!-- ✏️ Add results charts/screenshots here -->
   <div class="cs-section">
-    <div class="cs-section-label">Impact Visualisation</div>
-    <div class="image-placeholder" onclick="alert('Replace with your results chart or dashboard screenshot')">
-      <div class="image-placeholder-icon">📊</div>
-      <strong>Results Dashboard</strong>
-      <p>Add a chart, screenshot, or data visualisation showing the impact</p>
+    <div class="cs-section-label">Additional Levers</div>
+    <div class="tradeoffs" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div class="tradeoff-card">
+        <h4>Response Caching</h4>
+        <p>Scheme pitches, objection scripts, and closing lines are largely stable across calls. The Thums Up 2L pitch doesn't change daily. Caching high-frequency LLM outputs eliminates redundant generation — at 8,000 calls a day, this alone materially reduces token consumption.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Retrieval-First for Service Requests</h4>
+        <p>The Service Request Agent doesn't need the LLM to reason about cooler repair policies — it needs to retrieve the right FAQ entry and wrap it in an empathetic response. Retrieval handles 80% of the work; the LLM handles only the last mile. Significantly cheaper than prompting a large model to reason from scratch.</p>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ARTIFACTS -->
-<div class="tab-panel" id="tab-artifacts">
   <div class="cs-section">
-    <div class="cs-section-label">Artifacts & Deliverables</div>
-    <p style="color: var(--muted); margin-bottom: 32px;">
-      Add links, embeds, or images of your actual work artifacts here — PRDs, Figma mocks, research decks, etc.
-    </p>
+    <div class="cs-section-label">Cost Estimation</div>
 
-    <div class="image-placeholder" onclick="alert('Replace with your PRD, research deck, or prototype embed')">
-      <div class="image-placeholder-icon">📄</div>
-      <strong>PRD / Product Spec</strong>
-      <p>Link or embed your product requirements document</p>
+    <div style="margin-bottom:32px;">
+      <h4 style="font-size:14px; font-weight:600; margin-bottom:10px;">Step 1 — How does a call spend its time?</h4>
+      <p>A 4–5 minute retailer call isn't uniformly complex. Mapping agent activity to call time reveals a natural three-tier split: roughly 50% of the call demands heavy reasoning — the Orchestrator routing decisions, the Pitch Agent personalising the conversation, and the Objection Handler navigating pushback. Another 20% sits in a middle band — the Intro Agent reading retailer tone, the Skepticism Handler rebuilding trust, and the Service Request Agent retrieving and composing complaint responses. The remaining 30% is largely scripted and predictable — identity verification, order readback, and call exits.</p>
+      <p style="margin-top:10px;">This distribution is the foundation for tiered model selection: concentrate expensive compute on the half of the call that directly drives revenue, and use lightweight models for the half that doesn't.</p>
     </div>
 
-    <div class="image-placeholder" onclick="alert('Replace with Figma embed or prototype screenshots')">
-      <div class="image-placeholder-icon">🎨</div>
-      <strong>Prototype / Wireframes</strong>
-      <p>Embed your Figma prototype or add screenshots</p>
+    <div style="margin-bottom:32px;">
+      <h4 style="font-size:14px; font-weight:600; margin-bottom:10px;">Step 2 — Cost per minute by tier</h4>
+      <p style="margin-bottom:14px; color:#555550; font-size:14px;">Using GPT-4o for large and mid tier, GPT-4o mini for small tier. Assumptions: ~150 input tokens and ~30 output tokens per minute for large agents; ~100 input and ~20 output for mid and small.</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:10px;">Large — GPT-4o</div>
+          <div style="font-size:13px; color:#555550; line-height:1.8;">Input: 150 tokens × $2.50/1M = $0.000375<br>Output: 30 tokens × $10.00/1M = $0.000300</div>
+          <div style="font-size:15px; font-weight:700; margin-top:10px;">$0.000675 / min</div>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#1565c0; margin-bottom:10px;">Mid — GPT-4o</div>
+          <div style="font-size:13px; color:#555550; line-height:1.8;">Input: 100 tokens × $2.50/1M = $0.000250<br>Output: 20 tokens × $10.00/1M = $0.000200</div>
+          <div style="font-size:15px; font-weight:700; margin-top:10px;">$0.000450 / min</div>
+        </div>
+        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#2e7d32; margin-bottom:10px;">Small — GPT-4o mini</div>
+          <div style="font-size:13px; color:#555550; line-height:1.8;">Input: 100 tokens × $0.15/1M = $0.000015<br>Output: 20 tokens × $0.60/1M = $0.000012</div>
+          <div style="font-size:15px; font-weight:700; margin-top:10px;">$0.000027 / min</div>
+        </div>
+      </div>
     </div>
 
-    <div class="image-placeholder" onclick="alert('Replace with research findings or user interview notes')">
-      <div class="image-placeholder-icon">🔍</div>
-      <strong>User Research</strong>
-      <p>Add retailer interview highlights or research synthesis</p>
+    <div>
+      <h4 style="font-size:14px; font-weight:600; margin-bottom:10px;">Step 3 — Blended cost for a 4.5-minute call</h4>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:14px; margin-bottom:16px;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border);">
+              <th style="text-align:left; padding:10px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Tier</th>
+              <th style="text-align:left; padding:10px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Call Share</th>
+              <th style="text-align:left; padding:10px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Minutes</th>
+              <th style="text-align:left; padding:10px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Cost/min</th>
+              <th style="text-align:left; padding:10px 16px; font-weight:600; color:var(--muted); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+              <td style="padding:10px 16px; font-weight:500;">Large (GPT-4o)</td>
+              <td style="padding:10px 16px; color:#555550;">50%</td>
+              <td style="padding:10px 16px; color:#555550;">2.25 min</td>
+              <td style="padding:10px 16px; color:#555550;">$0.000675</td>
+              <td style="padding:10px 16px; font-weight:600;">$0.00152</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:10px 16px; font-weight:500;">Mid (GPT-4o)</td>
+              <td style="padding:10px 16px; color:#555550;">20%</td>
+              <td style="padding:10px 16px; color:#555550;">0.90 min</td>
+              <td style="padding:10px 16px; color:#555550;">$0.000450</td>
+              <td style="padding:10px 16px; font-weight:600;">$0.00041</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+              <td style="padding:10px 16px; font-weight:500;">Small (GPT-4o mini)</td>
+              <td style="padding:10px 16px; color:#555550;">30%</td>
+              <td style="padding:10px 16px; color:#555550;">1.35 min</td>
+              <td style="padding:10px 16px; color:#555550;">$0.000027</td>
+              <td style="padding:10px 16px; font-weight:600;">$0.000036</td>
+            </tr>
+            <tr style="background:#fde8dc;">
+              <td style="padding:10px 16px; font-weight:700;" colspan="4">Tiered total (4.5 min)</td>
+              <td style="padding:10px 16px; font-weight:700; color:var(--orange);">~$0.0019 / call</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <div class="callout-label">Savings</div>
+        <p>Single large model baseline: 4.5 min × $0.000675 = <strong>~$0.003/call</strong><br>Saving from tiering alone: <strong>~37%</strong></p>
+      </div>
     </div>
   </div>
+
 </div>
 
 <!-- PAGE NAV -->
@@ -417,10 +522,10 @@
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
 
-  const TABS = ['overview','approach','workflow','decisions','results','artifacts'];
+  const TABS = ['overview','approach','workflow','scaling'];
   const TAB_NAMES = {
     overview: 'Overview', approach: 'Approach', workflow: 'Workflow Design',
-    decisions: 'Decisions & Tradeoffs', results: 'Results', artifacts: 'Artifacts'
+    scaling: 'Scaling Strategy'
   };
   let currentTabIndex = 0;
 
