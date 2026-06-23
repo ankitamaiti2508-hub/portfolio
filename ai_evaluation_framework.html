@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Evaluation Framework — Agentic AI Voice Product</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #F0EDE8;
+  padding: 32px 28px;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ── HEADER ── */
+.page-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #C2410C;
+  margin-bottom: 6px;
+}
+.page-title {
+  font-family: 'Georgia', serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 6px;
+}
+.page-title span { color: #C2410C; font-style: italic; }
+.page-sub {
+  font-size: 11px;
+  color: #78716C;
+  margin-bottom: 28px;
+  letter-spacing: 0.2px;
+}
+
+/* ── INTRO PARA ── */
+.intro {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.75;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #E7E2DA;
+}
+
+/* ── LAYER SECTIONS ── */
+.layer {
+  margin-bottom: 36px;
+}
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.layer-badge {
+  background: #C2410C;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.layer-title {
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.layer-desc {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+/* ── TABLES ── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  margin-bottom: 16px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+thead tr {
+  background: #1E293B;
+  color: #fff;
+}
+thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+tbody tr {
+  border-bottom: 1px solid #F1EDE8;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:nth-child(even) { background: #FAF8F5; }
+tbody td {
+  padding: 10px 14px;
+  color: #334155;
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody td:first-child {
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+}
+.num-col {
+  color: #C2410C !important;
+  font-weight: 700 !important;
+  width: 32px;
+  text-align: center;
+}
+
+/* subtotal rows */
+.subtotal-row td {
+  background: #FFF0E8 !important;
+  font-weight: 700 !important;
+  color: #C2410C !important;
+  font-size: 11px;
+}
+
+/* pilot/prod cells */
+.target-cell {
+  font-weight: 700;
+  color: #0F172A;
+}
+
+/* ── CALLOUT BOX ── */
+.callout {
+  background: #fff;
+  border: 1px solid #E7E2DA;
+  border-left: 4px solid #C2410C;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.callout-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #C2410C;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.callout-body {
+  font-size: 12.5px;
+  color: #334155;
+  line-height: 1.65;
+}
+
+/* ── BINARY SCORING EXAMPLE ── */
+.scoring-example {
+  background: #fff;
+  border: 1px solid #E7E2DA;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 14px;
+}
+.scoring-example-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 4px;
+}
+.scoring-utterance {
+  font-size: 13px;
+  font-style: italic;
+  color: #475569;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #FAF8F5;
+  border-radius: 6px;
+  border-left: 3px solid #C2410C;
+}
+.rubric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #F1EDE8;
+  font-size: 12px;
+}
+.rubric-row:last-of-type { border-bottom: none; }
+.rubric-item { color: #334155; }
+.rubric-score-1 {
+  font-weight: 700;
+  color: #166534;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+.rubric-score-0 {
+  font-weight: 700;
+  color: #991B1B;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+.rubric-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #E7E2DA;
+  font-weight: 700;
+  font-size: 13px;
+  color: #0F172A;
+}
+.rubric-total-score {
+  color: #C2410C;
+  font-size: 15px;
+}
+.rubric-insight {
+  font-size: 11.5px;
+  color: #64748B;
+  font-style: italic;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ── ENGAGEMENT BUCKETS ── */
+.buckets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.bucket {
+  background: #fff;
+  border: 1px solid #E7E2DA;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.bucket-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #F1EDE8;
+}
+.bucket-engaged .bucket-title { color: #166534; }
+.bucket-not .bucket-title { color: #991B1B; }
+.bucket-item {
+  font-size: 11.5px;
+  color: #475569;
+  padding: 3px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.bucket-item::before { content: "·"; color: #C2410C; font-weight: 700; flex-shrink: 0; }
+
+/* ── CLOSING NOTE ── */
+.closing-note {
+  background: #1E293B;
+  color: #fff;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-top: 32px;
+}
+.closing-note-title {
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.closing-note-body {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.7;
+}
+
+/* divider */
+.divider {
+  height: 1px;
+  background: #E7E2DA;
+  margin: 28px 0;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-eyebrow">Evaluation & Quality</div>
+  <div class="page-title">AI <span>Evaluation Framework</span></div>
+  <div class="page-sub">Agentic AI Voice Product · HCCB · Qualitative-first evaluation for conversational AI</div>
+
+  <!-- INTRO -->
+  <div class="intro">
+    Evaluating a conversational AI system is fundamentally different from evaluating traditional software. There are no pass/fail unit tests. The agent's output is language — contextual, adaptive, and often ambiguous. Standard quantitative metrics like accuracy or F1 score don't capture what matters: did the agent sell well, handle an objection gracefully, or recover a skeptical retailer? My evaluation approach was two-layered — <strong>business metrics</strong> to track commercial outcomes, and <strong>call quality metrics</strong> assessed through a qualitative binary scoring framework, grounded in a golden dataset of real retailer scenarios.
+  </div>
+
+  <!-- LAYER 1 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge">Layer 1</span>
+      <span class="layer-title">Business & Operational Metrics</span>
+    </div>
+    <div class="layer-desc">Top-line metrics tracked at the call level to measure commercial performance of the AI system.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="num-col">#</th>
+            <th>Metric</th>
+            <th>Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="num-col">1</td><td>Order Conversion Rate</td><td>Number of orders successfully taken by AI from retailers</td></tr>
+          <tr><td class="num-col">2</td><td>Average Order Value (AOV)</td><td>Order value per AI-assisted transaction</td></tr>
+          <tr><td class="num-col">3</td><td>Average Handle Time (AHT)</td><td>Total call duration between AI agent and retailer</td></tr>
+          <tr><td class="num-col">4</td><td>Call Pickup Rate</td><td>Calls picked up ÷ calls triggered</td></tr>
+          <tr><td class="num-col">5</td><td>Call Engagement Rate</td><td>Engaged calls (>10s) ÷ calls picked up</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="layer-desc" style="margin-top:14px;">Engaged calls were bucketed to understand why calls succeeded or failed:</div>
+
+    <div class="buckets">
+      <div class="bucket bucket-engaged">
+        <div class="bucket-title">✓ Engaged Calls (&gt;10s)</div>
+        <div class="bucket-item">Stock present</div>
+        <div class="bucket-item">Already ordered on other source</div>
+        <div class="bucket-item">Service issue raised</div>
+        <div class="bucket-item">Schemes communicated but not convinced</div>
+        <div class="bucket-item">Schemes not communicated</div>
+      </div>
+      <div class="bucket bucket-not">
+        <div class="bucket-title">✗ Non-Engaged Calls (&lt;10s)</div>
+        <div class="bucket-item">Retailer busy / unavailable</div>
+        <div class="bucket-item">Disconnected due to suspicion</div>
+        <div class="bucket-item">Network issue</div>
+        <div class="bucket-item">No response</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LAYER 2 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge">Layer 2</span>
+      <span class="layer-title">Call Quality Metrics — Binary Scoring</span>
+    </div>
+    <div class="layer-desc">For qualitative evaluation, I built a framework around a golden dataset and binary scoring — assessing not just whether the agent responded, but whether it responded correctly at each critical moment of the call.</div>
+
+    <!-- Golden Dataset -->
+    <div class="callout">
+      <div class="callout-title">The Golden Dataset</div>
+      <div class="callout-body">A curated set of representative call scenarios — each defined by scenario type, the retailer's utterance as it would naturally occur on a call, and the expected agent behaviour. The dataset covers the highest-frequency and highest-stakes moments in the call, not every possible retailer utterance.</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Retailer Utterance</th>
+            <th>Expected Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Stock Present</td><td><em>"I already have stock"</em></td><td>Acknowledge + pitch alternate SKU</td></tr>
+          <tr><td>Salesman Preference</td><td><em>"I only give orders to my salesman"</em></td><td>Build trust + low-risk pitch</td></tr>
+          <tr><td>Busy</td><td><em>"I don't have time right now"</em></td><td>Trigger callback flow</td></tr>
+          <tr><td>Service Issue</td><td><em>"The cooler is broken"</em></td><td>Log complaint + return to order flow</td></tr>
+          <tr><td>Skepticism</td><td><em>"Who is this calling?"</em></td><td>Trigger authenticity response</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 10 metrics -->
+    <div class="layer-desc" style="margin-top:20px;">Each call was evaluated across 10 quality metrics, scored 0 or 1 per rubric item:</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="num-col">#</th>
+            <th>Call Quality Metric</th>
+            <th>Measured By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="num-col">1</td><td>Greeting / Introduction</td><td>Conversation moved to the next stage</td></tr>
+          <tr><td class="num-col">2</td><td>Retailer Verification</td><td>Explicit confirmation provided by retailer</td></tr>
+          <tr><td class="num-col">3</td><td>Product & Scheme Pitching</td><td>Retailer demonstrates understanding — acknowledges, asks follow-up questions, or responds meaningfully. Pitch is relevant to retailer profile, not generic.</td></tr>
+          <tr><td class="num-col">4</td><td>Service Request Handling</td><td>Agent acknowledges the issue, responds politely, provides correct guidance, and maintains conversational flow without derailing the call</td></tr>
+          <tr><td class="num-col">5</td><td>Persuasion Effectiveness</td><td>Agent successfully pivots when retailer has stock, refuses to order, or is only interested in complaining</td></tr>
+          <tr><td class="num-col">6</td><td>Skepticism Handling</td><td>Agent answers distributor, pricing, and delivery questions confidently; retailer continues without hesitation</td></tr>
+          <tr><td class="num-col">7</td><td>Order Validation</td><td>Agent confirms SKUs, quantities, and changes before placing; retailer explicitly agrees</td></tr>
+          <tr><td class="num-col">8</td><td>Order Value Communication</td><td>Agent communicates total order value clearly and accurately</td></tr>
+          <tr><td class="num-col">9</td><td>Call Closing</td><td>Agent summarises next steps, thanks retailer, and ends smoothly — no abrupt ending</td></tr>
+          <tr><td class="num-col">10</td><td>Latency</td><td>Response time measured in milliseconds from retailer end-of-speech to agent speech start</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Why binary -->
+    <div class="callout" style="margin-top:20px;">
+      <div class="callout-title">Why Binary, Not Likert</div>
+      <div class="callout-body">A Likert scale (0–5) introduces subjectivity at exactly the wrong moment. Consider the stock objection scenario: how do you score a 3 out of 5? Did the agent partially acknowledge? Somewhat pivot? The ambiguity makes scores inconsistent across evaluators and impossible to act on. Binary scoring forces precision — every rubric item is a specific, observable behaviour, which converts evaluation into a debugging tool.</div>
+    </div>
+
+    <!-- Scoring example -->
+    <div class="scoring-example">
+      <div class="scoring-example-title">Example — Stock Present Scenario</div>
+      <div class="scoring-utterance">Retailer: "I already have stock."</div>
+
+      <div class="rubric-row">
+        <span class="rubric-item">AI recognised stock objection</span>
+        <span class="rubric-score-1">1</span>
+      </div>
+      <div class="rubric-row">
+        <span class="rubric-item">AI acknowledged objection</span>
+        <span class="rubric-score-1">1</span>
+      </div>
+      <div class="rubric-row">
+        <span class="rubric-item">AI communicated active scheme</span>
+        <span class="rubric-score-1">1</span>
+      </div>
+      <div class="rubric-row">
+        <span class="rubric-item">AI attempted alternate pitch</span>
+        <span class="rubric-score-0">0</span>
+      </div>
+
+      <div class="rubric-total">
+        <span>Total Score</span>
+        <span class="rubric-total-score">3 / 4 = 75%</span>
+      </div>
+      <div class="rubric-insight">A 75% score tells you exactly where the failure occurred — the agent recognised and acknowledged the objection and surfaced a scheme, but didn't attempt an alternate pitch. That's a specific prompt engineering fix, not a vague quality problem.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LAYER 3 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge">Layer 3</span>
+      <span class="layer-title">System-Level SLA Targets</span>
+    </div>
+    <div class="layer-desc">Beyond call quality, the system was evaluated against technical SLAs — with separate targets for pilot and full production. The split was intentional: at pilot stage, the priority was proving conversion and learning failure modes. Tightening SLAs progressively as confidence in the system grows is the right sequencing.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Definition</th>
+            <th>Pilot Target</th>
+            <th>Production Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Word Error Rate (WER)</td>
+            <td>% of words incorrectly transcribed by the STT system in real retail audio conditions</td>
+            <td class="target-cell">≤ 10%</td>
+            <td class="target-cell">≤ 6–7%</td>
+          </tr>
+          <tr>
+            <td>Intent Accuracy</td>
+            <td>% of retailer utterances correctly mapped to the right intent by the agent</td>
+            <td class="target-cell">≥ 80%</td>
+            <td class="target-cell">≥ 90%</td>
+          </tr>
+          <tr>
+            <td>Transaction Accuracy</td>
+            <td>% of orders executed with correct SKU, quantity, and price</td>
+            <td class="target-cell">≥ 95%</td>
+            <td class="target-cell">≥ 98%</td>
+          </tr>
+          <tr>
+            <td>Task Containment</td>
+            <td>% of calls completed end-to-end without human handoff or escalation</td>
+            <td class="target-cell">≥ 70%</td>
+            <td class="target-cell">≥ 85%</td>
+          </tr>
+          <tr>
+            <td>Turn Latency (avg)</td>
+            <td>Time from retailer end-of-speech to agent speech start</td>
+            <td class="target-cell">&lt; 3.5s</td>
+            <td class="target-cell">&lt; 2.5s</td>
+          </tr>
+          <tr>
+            <td>Hallucination Rate</td>
+            <td>% of AI-generated statements that are fabricated, misleading, or factually incorrect</td>
+            <td class="target-cell">≤ 0.5%</td>
+            <td class="target-cell">≤ 0.1% for financial statements</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CLOSING NOTE -->
+  <div class="closing-note">
+    <div class="closing-note-title">Why This Approach Works for Agentic Systems</div>
+    <div class="closing-note-body">Traditional ML evaluation assumes a fixed input-output mapping. Agentic systems don't — the agent's response depends on conversation history, retailer tone, retrieved context, and current call state. Aggregate accuracy metrics obscure where in the workflow things break down. The combination of a golden dataset, binary rubrics, and sequence-level scoring solves this: each step of the workflow is independently scored, which means you can identify that the Pitch Agent performs well but the Objection Handler consistently fails to attempt an alternate pitch. That's the granularity needed to improve a multi-agent system systematically.</div>
+  </div>
+
+</div>
+</body>
+</html>
