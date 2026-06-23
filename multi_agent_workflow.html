@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi-Agent Conversational Selling Workflow</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #F0EDE8;
+  padding: 28px 24px;
+  color: #1a1a1a;
+}
+
+h1 {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 4px;
+  font-family: 'Georgia', serif;
+}
+h1 span { color: #C2410C; font-style: italic; }
+.subtitle {
+  text-align: center;
+  font-size: 10px;
+  color: #78716C;
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── ARROWS ── */
+.arr-down {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 4px auto;
+}
+.arr-down .line { width: 2px; height: 16px; background: #A8A29E; }
+.arr-down .head {
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #A8A29E;
+}
+.arr-label { font-size: 8px; color: #A8A29E; font-style: italic; margin-top: 2px; text-align: center; }
+
+.arr-right {
+  display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;
+}
+.arr-right .line { height: 2px; width: 18px; background: #A8A29E; }
+.arr-right .head {
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 7px solid #A8A29E;
+}
+
+/* ── SHARED CARD ── */
+.card {
+  background: #fff;
+  border: 1px solid #D6D0C8;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.card-accent {
+  background: #fff;
+  border: 1.5px solid #C2410C;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.agent-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: #C2410C;
+  margin-bottom: 5px;
+}
+.agent-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agent-desc {
+  font-size: 8.5px;
+  color: #57534E;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 7.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #F1F5F9;
+  border: 1px solid #D6D0C8;
+  color: #475569;
+  margin: 2px 2px 0 0;
+}
+.tag-orange {
+  background: #FFF0E8;
+  border-color: #FED7AA;
+  color: #9A3412;
+}
+.tag-slate {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #334155;
+}
+
+/* ── ORCHESTRATOR ── */
+.orchestrator {
+  background: #1E293B;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 0;
+}
+.orch-icon { font-size: 28px; flex-shrink: 0; }
+.orch-text { flex: 1; }
+.orch-title { font-size: 14px; font-weight: 700; font-family: 'Georgia', serif; margin-bottom: 3px; }
+.orch-sub { font-size: 9px; opacity: 0.75; line-height: 1.5; }
+.orch-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.orch-tag {
+  font-size: 7.5px; font-weight: 600;
+  padding: 2px 7px; border-radius: 3px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* ── MAIN FLOW LAYOUT ── */
+.main-flow {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 14px;
+  align-items: start;
+}
+
+/* left = linear agent chain */
+.agent-chain {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+/* each agent row */
+.agent-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+/* agent main block */
+.agent-block {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #D6D0C8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  position: relative;
+}
+.agent-block.highlight {
+  border-color: #C2410C;
+  border-width: 1.5px;
+}
+
+/* side branch (for decision outcomes) */
+.side-branch {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* decision diamond */
+.diamond-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+.diamond {
+  width: 52px; height: 52px;
+  background: #FFF8F5;
+  border: 1.5px solid #C2410C;
+  border-radius: 4px;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.diamond-inner {
+  transform: rotate(-45deg);
+  font-size: 8px;
+  font-weight: 700;
+  color: #C2410C;
+  text-align: center;
+  line-height: 1.2;
+  padding: 2px;
+}
+
+/* interrupt agents on right col */
+.interrupt-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.interrupt-agent {
+  background: #FAF8F5;
+  border: 1px dashed #C2410C;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.interrupt-agent-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.interrupt-agent-sub {
+  font-size: 8px;
+  color: #57534E;
+  line-height: 1.5;
+}
+.interrupt-header {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #C2410C;
+  margin-bottom: 8px;
+  text-align: center;
+  padding: 4px 8px;
+  border-bottom: 1px solid #E7E2DA;
+}
+
+/* context sources bottom */
+.context-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.ctx-block {
+  background: #fff;
+  border: 1px solid #D6D0C8;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.ctx-block-title {
+  font-size: 9px;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #E7E2DA;
+}
+.ctx-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+.ctx-tag {
+  font-size: 7.5px;
+  background: #FAF8F5;
+  border: 1px solid #E7E2DA;
+  color: #57534E;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+/* step badge */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  background: #C2410C;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 8.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* outcome pill */
+.outcome {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 7.5px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin: 2px 2px 0 0;
+}
+.outcome-green  { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+.outcome-red    { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+.outcome-orange { background: #FFF7ED; color: #9A3412; border: 1px solid #FED7AA; }
+.outcome-slate  { background: #F8FAFC; color: #334155; border: 1px solid #CBD5E1; }
+
+/* sub-steps within an agent */
+.sub-steps { margin-top: 6px; }
+.sub-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 8px;
+  color: #334155;
+  line-height: 1.4;
+}
+.sub-dot {
+  width: 5px; height: 5px;
+  background: #C2410C;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* between-agent arrow with label */
+.between-arr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5px 0 5px 20px;
+}
+.ba-line { width: 2px; height: 20px; background: #A8A29E; margin: 0 auto; }
+.ba-head {
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #A8A29E;
+  margin: 0 auto;
+}
+.ba-label {
+  font-size: 7.5px;
+  color: #A8A29E;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<h1>Multi-Agent <span>Conversational Selling</span> Workflow</h1>
+<div class="subtitle">Agentic AI System · Retailer Order Taking · Salesman Absenteeism Coverage · HCCB</div>
+
+<div class="page">
+
+  <!-- ORCHESTRATOR -->
+  <div class="orchestrator">
+    <div class="orch-icon">🤖</div>
+    <div class="orch-text">
+      <div class="orch-title">Orchestrator Agent</div>
+      <div class="orch-sub">Manages the full call lifecycle · Routes between specialist agents · Maintains conversation state · Decides next best action at each step</div>
+      <div class="orch-tags">
+        <span class="orch-tag">State Machine</span>
+        <span class="orch-tag">Intent Detection</span>
+        <span class="orch-tag">Agent Routing</span>
+        <span class="orch-tag">Context Passing</span>
+        <span class="orch-tag">LLM Backbone</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr-down" style="margin: 8px auto;">
+    <div class="line"></div><div class="head"></div>
+    <div class="arr-label">Routes to specialist agents based on conversation state</div>
+  </div>
+
+  <!-- MAIN FLOW + INTERRUPT COL -->
+  <div class="main-flow">
+
+    <!-- LEFT: LINEAR AGENT CHAIN -->
+    <div class="agent-chain">
+
+      <!-- AGENT 1: VERIFICATION -->
+      <div class="agent-block">
+        <div class="agent-label">Agent 1 · Retailer Verification</div>
+        <div class="agent-title"><span class="step-badge">1</span> 🔐 Verification Agent</div>
+        <div class="agent-desc">Confirms retailer identity before proceeding with the call.</div>
+        <div class="sub-steps">
+          <div class="sub-step"><div class="sub-dot"></div><span>Greets retailer and asks: <em>"Am I speaking with Store X?"</em></span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Cross-checks retailer response against Retailer DB (store name, owner name, phone)</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Confirms identity match before passing context to next agent</span></div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="outcome outcome-green">✓ Verified → proceed</span>
+          <span class="outcome outcome-red">✗ Wrong store → Close Call Agent</span>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="tag">Retailer DB lookup</span>
+          <span class="tag">Identity matching</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;margin:5px 0 5px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:2px;height:18px;background:#A8A29E;"></div>
+            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+          </div>
+          <span style="font-size:7.5px;color:#A8A29E;font-style:italic;">Verified · retailer context loaded</span>
+        </div>
+      </div>
+
+      <!-- AGENT 2: INTRO -->
+      <div class="agent-block">
+        <div class="agent-label">Agent 2 · Introduction & Context Setting</div>
+        <div class="agent-title"><span class="step-badge">2</span> 💬 Intro Agent</div>
+        <div class="agent-desc">Sets the context for the call, builds rapport before pitching.</div>
+        <div class="sub-steps">
+          <div class="sub-step"><div class="sub-dot"></div><span>Explains reason for call: <em>"Your salesman is absent today, so I'm calling to take your order."</em></span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Opens with a rapport question: <em>"How is business going? How are sales this week?"</em></span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Reads retailer response tone — positive / neutral / busy / complaint — and flags to orchestrator</span></div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="outcome outcome-green">✓ Engaged → Pitch Agent</span>
+          <span class="outcome outcome-orange">Busy → Callback Agent</span>
+          <span class="outcome outcome-orange">Complaint → Service Agent</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;margin:5px 0 5px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:2px;height:18px;background:#A8A29E;"></div>
+            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+          </div>
+          <span style="font-size:7.5px;color:#A8A29E;font-style:italic;">Retailer engaged · tone assessed</span>
+        </div>
+      </div>
+
+      <!-- AGENT 3: PITCH -->
+      <div class="agent-block highlight">
+        <div class="agent-label">Agent 3 · Product & Scheme Pitch</div>
+        <div class="agent-title"><span class="step-badge">3</span> 🛒 Pitch Agent</div>
+        <div class="agent-desc">Core selling agent — personalised pitch using past order data and active schemes.</div>
+        <div class="sub-steps">
+          <div class="sub-step"><div class="sub-dot"></div><span><strong>Past order lookup:</strong> Identifies top SKUs the retailer orders regularly and leads with those</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span><strong>Scheme surfacing:</strong> Surfaces the most attractive active schemes and offers relevant to this retailer's category</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span><strong>Stock check:</strong> Asks retailer about current stock levels to determine pitch strategy</span></div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="outcome outcome-green">Has stock gaps → Stock Objection Agent</span>
+          <span class="outcome outcome-slate">Full stock → Low AOV Pitch Agent</span>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="tag">Past orders DB</span>
+          <span class="tag">Schemes & offers DB</span>
+          <span class="tag">SKU catalogue</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;margin:5px 0 5px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:2px;height:18px;background:#A8A29E;"></div>
+            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+          </div>
+          <span style="font-size:7.5px;color:#A8A29E;font-style:italic;">Stock status known · pitch strategy selected</span>
+        </div>
+      </div>
+
+      <!-- AGENTS 4A + 4B side by side -->
+      <div style="display:grid;grid-template-columns:1fr 12px 1fr;gap:0;align-items:start;">
+
+        <!-- 4A: Stock objection -->
+        <div class="agent-block">
+          <div class="agent-label">Agent 4A · Stock Objection</div>
+          <div class="agent-title"><span class="step-badge">4</span> 📦 Stock Agent</div>
+          <div class="agent-desc">Retailer says they have stock — find gaps and pitch accordingly.</div>
+          <div class="sub-steps">
+            <div class="sub-step"><div class="sub-dot"></div><span>Asks which SKUs they have sufficient stock of</span></div>
+            <div class="sub-step"><div class="sub-dot"></div><span>Cross-references against their typical order basket to identify missing SKUs</span></div>
+            <div class="sub-step"><div class="sub-dot"></div><span>Pitches specifically on the gaps: <em>"I see you usually order X — are you running low on that?"</em></span></div>
+          </div>
+          <div style="margin-top:6px;">
+            <span class="tag">Order history</span>
+            <span class="tag">Inventory data</span>
+          </div>
+        </div>
+
+        <!-- divider -->
+        <div style="display:flex;align-items:center;justify-content:center;padding-top:40px;">
+          <div style="font-size:9px;color:#A8A29E;font-weight:700;">OR</div>
+        </div>
+
+        <!-- 4B: Full stock / Low AOV -->
+        <div class="agent-block">
+          <div class="agent-label">Agent 4B · Full Stock / Low AOV</div>
+          <div class="agent-title"><span class="step-badge">4</span> 💡 AOV Agent</div>
+          <div class="agent-desc">Retailer has full stock — pivot to low-AOV products and alternate strategies.</div>
+          <div class="sub-steps">
+            <div class="sub-step"><div class="sub-dot"></div><span>Pivots to low-AOV / impulse SKUs: small packs, new launches, seasonal items</span></div>
+            <div class="sub-step"><div class="sub-dot"></div><span>Tries alternate pitch angles: scheme urgency (<em>"offer ends this week"</em>), social proof (<em>"neighbouring stores are picking this up"</em>)</span></div>
+            <div class="sub-step"><div class="sub-dot"></div><span>If no traction — gracefully moves to order confirmation or close</span></div>
+          </div>
+          <div style="margin-top:6px;">
+            <span class="tag">SKU catalogue</span>
+            <span class="tag">Schemes DB</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;margin:5px 0 5px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:2px;height:18px;background:#A8A29E;"></div>
+            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+          </div>
+          <span style="font-size:7.5px;color:#A8A29E;font-style:italic;">Order basket confirmed</span>
+        </div>
+      </div>
+
+      <!-- AGENT 5: ORDER CONFIRMATION -->
+      <div class="agent-block highlight">
+        <div class="agent-label">Agent 5 · Order Confirmation</div>
+        <div class="agent-title"><span class="step-badge">5</span> ✅ Order Agent</div>
+        <div class="agent-desc">Reads back the full order, confirms quantities, and places it in the OMS.</div>
+        <div class="sub-steps">
+          <div class="sub-step"><div class="sub-dot"></div><span>Summarises the order: SKUs, quantities, applicable schemes</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Gets explicit confirmation from retailer</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Places order in Order Management System · shares order reference</span></div>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="tag">Order Management System</span>
+          <span class="tag">Scheme validation</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;margin:5px 0 5px 24px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div style="width:2px;height:18px;background:#A8A29E;"></div>
+            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+          </div>
+          <span style="font-size:7.5px;color:#A8A29E;font-style:italic;">Order placed · closing</span>
+        </div>
+      </div>
+
+      <!-- AGENT 6: CLOSE -->
+      <div class="agent-block">
+        <div class="agent-label">Agent 6 · Call Closing</div>
+        <div class="agent-title"><span class="step-badge">6</span> 🤝 Close Agent</div>
+        <div class="agent-desc">Closes the call warmly and logs outcome.</div>
+        <div class="sub-steps">
+          <div class="sub-step"><div class="sub-dot"></div><span>Thanks retailer · shares order summary and expected delivery</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Logs call outcome, order ID, and any flags to CRM</span></div>
+          <div class="sub-step"><div class="sub-dot"></div><span>Ends call gracefully</span></div>
+        </div>
+        <div style="margin-top:6px;">
+          <span class="tag">CRM / ERP</span>
+          <span class="tag">Call logging</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: INTERRUPT AGENTS -->
+    <div class="interrupt-col">
+
+      <div class="card" style="padding:10px 12px;">
+        <div class="interrupt-header">⚡ Interrupt Agents</div>
+        <div style="font-size:7.5px;color:#78716C;text-align:center;margin-bottom:8px;">Triggered at any point · Resolve & return to flow · 5 agents</div>
+
+        <!-- Skepticism Handler -->
+        <div class="interrupt-agent" style="margin-bottom:8px;">
+          <div class="interrupt-agent-title">🛡️ Skepticism Handler Agent</div>
+          <div class="interrupt-agent-sub">
+            Triggered when retailer doubts who is calling — <em>"Who are you? Where is this call from?"</em><br><br>
+            · Proactively shares trust-building details the retailer recognises:<br>
+            &nbsp;&nbsp;— Distributor name they order from<br>
+            &nbsp;&nbsp;— Last order date and SKUs<br>
+            &nbsp;&nbsp;— Delivery address on file<br>
+            · Familiarity with their account builds credibility fast<br>
+            · Returns to verification or pitch flow once trust is established
+          </div>
+          <div style="margin-top:5px;">
+            <span class="tag tag-orange" style="font-size:7px;">Retailer DB</span>
+            <span class="tag tag-orange" style="font-size:7px;">Distributor mapping</span>
+            <span class="tag tag-orange" style="font-size:7px;">Order history</span>
+          </div>
+        </div>
+
+        <!-- Wrong Store -->
+        <div class="interrupt-agent" style="margin-bottom:8px;">
+          <div class="interrupt-agent-title">❌ Wrong Store Agent</div>
+          <div class="interrupt-agent-sub">
+            Triggered during Verification if retailer identity doesn't match.<br><br>
+            · Apologises for the inconvenience<br>
+            · Closes call gracefully<br>
+            · Logs as wrong number in CRM
+          </div>
+        </div>
+
+        <!-- Callback -->
+        <div class="interrupt-agent" style="margin-bottom:8px;">
+          <div class="interrupt-agent-title">🕐 Callback Agent</div>
+          <div class="interrupt-agent-sub">
+            Triggered if retailer says they are busy.<br><br>
+            · Acknowledges: <em>"No problem, when would be a good time?"</em><br>
+            · Finds a mutually suitable time<br>
+            · Schedules callback in system<br>
+            · Closes call politely
+          </div>
+        </div>
+
+        <!-- Service Request -->
+        <div class="interrupt-agent" style="margin-bottom:8px;">
+          <div class="interrupt-agent-title">🎧 Service Request Agent</div>
+          <div class="interrupt-agent-sub">
+            Triggered if retailer raises a complaint (e.g. cooler issues, delivery problem).<br><br>
+            · Acknowledges the issue empathetically<br>
+            · Refers to Service FAQs DB for resolution guidance<br>
+            · Raises a service ticket<br>
+            · Returns to pitch flow after resolution
+          </div>
+          <div style="margin-top:5px;">
+            <span class="tag tag-orange" style="font-size:7px;">Service FAQs DB</span>
+            <span class="tag tag-orange" style="font-size:7px;">Ticketing System</span>
+          </div>
+        </div>
+
+        <!-- Objection Handler -->
+        <div class="interrupt-agent">
+          <div class="interrupt-agent-title">❗ Objection Handler Agent</div>
+          <div class="interrupt-agent-sub">
+            Triggered during pitch if retailer pushes back on price, quality, or competitor offers.<br><br>
+            · Uses pre-trained objection handling scripts<br>
+            · Surfaces relevant scheme to counter<br>
+            · Returns to pitch flow
+          </div>
+          <div style="margin-top:5px;">
+            <span class="tag tag-orange" style="font-size:7px;">Schemes DB</span>
+            <span class="tag tag-orange" style="font-size:7px;">Objection Scripts</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTEXT SOURCES -->
+  <div style="display:flex;flex-direction:column;align-items:center;margin:10px 0 6px;">
+    <div style="width:2px;height:14px;background:#A8A29E;"></div>
+    <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #A8A29E;"></div>
+    <div style="font-size:8px;color:#A8A29E;font-style:italic;margin-top:2px;">Context sources available to all agents</div>
+  </div>
+
+  <div class="context-row">
+    <div class="ctx-block">
+      <div class="ctx-block-title">🏪 Retailer Context DB</div>
+      <div class="ctx-tags">
+        <span class="ctx-tag">Store details</span>
+        <span class="ctx-tag">Past orders</span>
+        <span class="ctx-tag">Order frequency</span>
+        <span class="ctx-tag">Retailer category</span>
+        <span class="ctx-tag">Credit / terms</span>
+      </div>
+    </div>
+    <div class="ctx-block">
+      <div class="ctx-block-title">💼 Business Context DB</div>
+      <div class="ctx-tags">
+        <span class="ctx-tag">SKU catalogue</span>
+        <span class="ctx-tag">Pricing</span>
+        <span class="ctx-tag">Active schemes & offers</span>
+        <span class="ctx-tag">New launches</span>
+      </div>
+    </div>
+    <div class="ctx-block">
+      <div class="ctx-block-title">⚙️ Operational Context DB</div>
+      <div class="ctx-tags">
+        <span class="ctx-tag">Inventory info</span>
+        <span class="ctx-tag">Delivery info</span>
+        <span class="ctx-tag">Distributor mapping</span>
+        <span class="ctx-tag">Service FAQs</span>
+        <span class="ctx-tag">Policies</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
+HTMLEOF
