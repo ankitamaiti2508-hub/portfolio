@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntelliVault — Ankita Maiti</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ankita Maiti</a>
+  <div class="nav-links">
+    <a href="index.html#work" class="active">Work</a>
+    <a href="about.html">About</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- CASE STUDY HERO -->
+<div class="cs-hero">
+  <a href="index.html" class="cs-back">← Back to all work</a>
+  <div class="cs-meta">
+    <span class="tag">Personal Project</span>
+    <span class="tag">RAG</span>
+    <span class="tag">AI / LLM</span>
+    <span class="tag">Internal Tool</span>
+    <span class="tag">n8n</span>
+  </div>
+  <h1 class="cs-title">IntelliVault — <em>Internal Knowledge Agent</em></h1>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <div class="cs-metric-val">2-pipeline</div>
+      <div class="cs-metric-label">RAG Architecture</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">Cohere</div>
+      <div class="cs-metric-label">Reranking for Precision</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">Full</div>
+      <div class="cs-metric-label">Citation & Auditability</div>
+    </div>
+    <div class="cs-metric">
+      <div class="cs-metric-val">Auto</div>
+      <div class="cs-metric-label">Google Drive Ingestion</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab-list">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('architecture', this)">Architecture</button>
+    <button class="tab-btn" onclick="switchTab('demo', this)">Live Demo</button>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-panel active" id="tab-overview">
+
+  <div class="cs-section">
+    <div class="cs-section-label">The Problem</div>
+    <p>Leadership teams in most organisations sit on top of enormous amounts of institutional knowledge locked in documents — quarterly financial reports, churn analyses, product roadmaps, board decks — spread across Google Drive folders, with no way to query them directly. The alternative is either manually searching through files or waiting for someone to pull the right number from the right report.</p>
+    <p style="margin-top:14px;">The problem isn't that the data doesn't exist. It's that there's no interface between leadership's questions and the documents that answer them.</p>
+
+    <div class="callout">
+      <div class="callout-label">What I Built</div>
+      <p>IntelliVault is a two-pipeline RAG (Retrieval-Augmented Generation) system that lets leadership query internal documents in plain English — and get cited, auditable answers sourced directly from those documents. No hallucinations, no guessing, no manual search.</p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">How It Works</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Documents flow in automatically</h4>
+        <p>When a file is added or modified in Google Drive, an n8n pipeline triggers automatically. It extracts text, parses metadata from the filename (department, document type, time period), chunks the text into 500-token segments with 100-token overlap, embeds each chunk using OpenAI's <code>text-embedding-3-large</code>, and upserts to Pinecone with full metadata attached.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Queries get precise, cited answers</h4>
+        <p>A leadership query ("What was Q3 churn in Finance?") gets embedded, filtered by department/time period metadata, run through Pinecone similarity search (top 20), reranked by Cohere cross-encoder (top 5), assembled into a context block, and sent to GPT-4o with a strict citation-only system prompt. The answer includes inline source citations and a full sources list.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Every answer is auditable</h4>
+        <p>Each query and response is logged with source files, relevance scores, and a session ID. A confidence indicator (High / Medium / Low) signals when answers should be verified manually.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Key Design Decisions</div>
+    <div class="tradeoffs">
+      <div class="tradeoff-card">
+        <h4>Metadata-first filtering</h4>
+        <p>Every chunk carries department, document type, date, and source. This enables scoped queries ("Q3 revenue, Finance only") that would otherwise retrieve noise from unrelated departments.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Two-stage retrieval</h4>
+        <p>Pinecone casts a wide net (top 20 by vector similarity). Cohere Rerank re-scores using a cross-encoder that reads query + chunk together — the #1 vector result is the true best answer only ~60% of the time without reranking.</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Citation-only generation</h4>
+        <p>GPT-4o is instructed never to use outside knowledge — only the retrieved chunks. If the documents don't contain the answer, it says so. This prevents confident-sounding hallucinations, which are more dangerous than a honest "I don't know."</p>
+      </div>
+      <div class="tradeoff-card">
+        <h4>Filename-encoded metadata</h4>
+        <p>A naming convention (<code>Finance_FinancialReport_2024Q3_Name.pdf</code>) lets n8n parse department, document type, and time period automatically — no manual tagging, no ingestion UI needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Stack</div>
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-top:8px;">
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Orchestration</div>
+        <div style="font-weight:600;">n8n</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Ingestion + query pipelines, auto-triggered by Google Drive</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Vector DB</div>
+        <div style="font-weight:600;">Pinecone</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">3072-dim cosine index, metadata-filtered similarity search</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Embeddings</div>
+        <div style="font-weight:600;">OpenAI text-embedding-3-large</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">3072-dimensional, best-in-class semantic quality</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Reranking</div>
+        <div style="font-weight:600;">Cohere rerank-english-v3.0</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Cross-encoder re-scores top 20, returns top 5</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Generation</div>
+        <div style="font-weight:600;">GPT-4o</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Citation-only system prompt, no outside knowledge</div>
+      </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Document Source</div>
+        <div style="font-weight:600;">Google Drive</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Auto-ingestion on file create/update, no manual upload</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="tab-panel" id="tab-architecture">
+
+  <div class="cs-section">
+    <div class="cs-section-label">System Design</div>
+    <p>IntelliVault is two separate n8n pipelines with a shared Pinecone index. Documents flow in through Pipeline 1; leadership queries flow through Pipeline 2. They never interact at runtime — the index is the shared state.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;">
+
+    <div>
+      <div class="cs-section">
+        <div class="cs-section-label">Pipeline 1 — Document Ingestion</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Google Drive Trigger</h4>
+            <p>Fires on file create or update. Watches the entire <code>IntelliVault/</code> folder tree, including sub-folders per department.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Extract Text</h4>
+            <p>Routes by file type — PDF extractor, DOCX binary reader, or plain text. Outputs a single <code>text</code> field.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Parse Metadata from Filename</h4>
+            <p>JavaScript node parses <code>Finance_FinancialReport_2024Q3_Name.pdf</code> → <code>department</code>, <code>document_type</code>, <code>time_period</code>. No manual tagging needed.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Recursive Text Splitter</h4>
+            <p>500-token chunks, 100-token overlap. Tries paragraph breaks → line breaks → sentence boundaries → words. Structure-aware for reports with headings; table-aware to avoid mid-row splits.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Embed + Upsert</h4>
+            <p>Each chunk embedded with <code>text-embedding-3-large</code> (3072 dims). Upserted to Pinecone with full metadata: source file, department, time period, chunk index, raw text for citation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="cs-section">
+        <div class="cs-section-label">Pipeline 2 — Query & Answer</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Webhook Trigger</h4>
+            <p>Receives <code>{ query, department?, time_period? }</code> via POST. The chat UI calls this endpoint directly.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Embed Query + Build Filter</h4>
+            <p>Query embedded with the same model. Optional metadata filter constructed: <code>{"department": {"$eq": "Finance"}, "time_period": {"$eq": "2024-Q3"}}</code>.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Pinecone Search (top 20)</h4>
+            <p>Cosine similarity search against filtered vectors. Deliberately casts a wide net — precision comes from the reranker, not the retriever.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>Cohere Rerank (top 5)</h4>
+            <p>Cross-encoder reads query + each of the 20 chunks together, producing a relevance score that reflects direct answerability — not just topical similarity. Chunks below 0.3 are discarded.</p>
+          </div>
+          <div class="step">
+            <div class="step-num"></div>
+            <h4>GPT-4o → Cited Answer</h4>
+            <p>System prompt enforces citation-only generation. Answer includes inline <code>[SOURCE N]</code> references and a sources list. Every query is logged with scores, sources, and session ID.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Metadata Schema</div>
+    <p style="margin-bottom:16px;">Every vector in Pinecone carries this metadata — enabling precise filtering before similarity search runs.</p>
+    <div style="background:#1E293B; border-radius:10px; padding:20px 24px; overflow-x:auto;">
+      <pre style="font-family: 'SF Mono', 'Fira Code', monospace; font-size:13px; color:#e2e8f0; line-height:1.7; margin:0;">{
+  "source_file_name": "Finance_FinancialReport_2024Q3_Revenue.pdf",
+  "department":       "Finance",
+  "document_type":    "financial_report",
+  "time_period":      "2024-Q3",
+  "ingested_at":      "2024-10-15T09:30:00Z",
+  "chunk_index":      4,
+  "total_chunks":     22,
+  "text":             "Revenue for Q3 2024 declined by 12% year-over-year..."
+}</pre>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Chunking Strategy by Document Type</div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);">
+            <th style="text-align:left; padding:10px 16px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;">Document Type</th>
+            <th style="text-align:left; padding:10px 16px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;">Strategy</th>
+            <th style="text-align:left; padding:10px 16px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;">Chunk Size</th>
+            <th style="text-align:left; padding:10px 16px; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em;">Overlap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:10px 16px; font-weight:500;">Financial reports (prose)</td>
+            <td style="padding:10px 16px; color:#555550;">Recursive</td>
+            <td style="padding:10px 16px; color:#555550;">500 tokens</td>
+            <td style="padding:10px 16px; color:#555550;">100</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px 16px; font-weight:500;">Financial reports (tables)</td>
+            <td style="padding:10px 16px; color:#555550;">Table-aware (atomic)</td>
+            <td style="padding:10px 16px; color:#555550;">Full table</td>
+            <td style="padding:10px 16px; color:#555550;">N/A</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
+            <td style="padding:10px 16px; font-weight:500;">Product catalogs</td>
+            <td style="padding:10px 16px; color:#555550;">Structure-aware (per section)</td>
+            <td style="padding:10px 16px; color:#555550;">Per section</td>
+            <td style="padding:10px 16px; color:#555550;">50</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px 16px; font-weight:500;">Executive summaries</td>
+            <td style="padding:10px 16px; color:#555550;">Sentence window</td>
+            <td style="padding:10px 16px; color:#555550;">5 sentences</td>
+            <td style="padding:10px 16px; color:#555550;">3 sentences</td>
+          </tr>
+          <tr style="background:var(--bg-card);">
+            <td style="padding:10px 16px; font-weight:500;">Churn / analytics reports</td>
+            <td style="padding:10px 16px; color:#555550;">Recursive</td>
+            <td style="padding:10px 16px; color:#555550;">400 tokens</td>
+            <td style="padding:10px 16px; color:#555550;">80</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIVE DEMO -->
+<div class="tab-panel" id="tab-demo">
+  <div class="cs-section" style="margin-bottom:24px;">
+    <div class="cs-section-label">Live Demo</div>
+    <p>The demo below is loaded with sample internal documents — a Q3 financial report, HR workforce analysis, engineering platform update, and product roadmap. Try asking questions like:</p>
+    <ul style="margin-top:12px; color:#555550; font-size:14px; line-height:2;">
+      <li><em>"What was the revenue performance in Q3 2024?"</em></li>
+      <li><em>"What are the key findings from the HR workforce report?"</em></li>
+      <li><em>"What platform updates were made by Engineering?"</em></li>
+      <li><em>"What's on the product roadmap?"</em></li>
+    </ul>
+  </div>
+  <div style="width:100%; height:80vh; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+    <iframe
+      src="intellivault_chat.html"
+      style="width:100%; height:100%; border:none; display:block;"
+      title="IntelliVault Live Demo">
+    </iframe>
+  </div>
+</div>
+
+<!-- PAGE NAV -->
+<div style="padding: 32px 48px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div id="nav-prev-tab" style="display:none;">
+      <a id="prev-tab-link" href="#" onclick="navTab(-1); return false;" style="font-size:14px; font-weight:600; color: var(--orange);">← <span id="prev-tab-name"></span></a>
+    </div>
+    <div id="nav-next-tab" style="display:none;">
+      <a id="next-tab-link" href="#" onclick="navTab(1); return false;" style="font-size:14px; font-weight:600; color: var(--orange);"><span id="next-tab-name"></span> →</a>
+    </div>
+  </div>
+  <a href="cs-fleet.html" style="font-size:14px; font-weight:600; color:#888; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px;">← Previous project: Fleet Guardian AI</a>
+</div>
+
+<footer>
+  <span>© 2026 Ankita Maiti</span>
+  <a href="index.html" style="color: var(--orange);">← Back to portfolio</a>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+  const TABS = ['overview','architecture','demo'];
+  const TAB_NAMES = { overview: 'Overview', architecture: 'Architecture', demo: 'Live Demo' };
+  let currentTabIndex = 0;
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    currentTabIndex = TABS.indexOf(id);
+    updatePageNav();
+    window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 70, behavior: 'smooth' });
+  }
+
+  function navTab(dir) {
+    const newIndex = currentTabIndex + dir;
+    if (newIndex < 0 || newIndex >= TABS.length) return;
+    const btn = document.querySelectorAll('.tab-btn')[newIndex];
+    switchTab(TABS[newIndex], btn);
+  }
+
+  function updatePageNav() {
+    const hasPrev = currentTabIndex > 0;
+    const hasNext = currentTabIndex < TABS.length - 1;
+    document.getElementById('nav-prev-tab').style.display = hasPrev ? 'block' : 'none';
+    document.getElementById('nav-next-tab').style.display = hasNext ? 'block' : 'none';
+    if (hasPrev) document.getElementById('prev-tab-name').textContent = TAB_NAMES[TABS[currentTabIndex - 1]];
+    if (hasNext) document.getElementById('next-tab-name').textContent = TAB_NAMES[TABS[currentTabIndex + 1]];
+  }
+
+  updatePageNav();
+</script>
+</body>
+</html>
