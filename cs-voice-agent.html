@@ -179,7 +179,7 @@
 <!-- WORKFLOW DESIGN -->
 <div class="tab-panel" id="tab-workflow">
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;">
+  <div class="split-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;">
 
     <!-- LEFT: TEXT EXPLANATION -->
     <div>
@@ -617,7 +617,7 @@
     <div style="margin-bottom:32px;">
       <h4 style="font-size:14px; font-weight:600; margin-bottom:10px;">Step 2 — Cost per minute by tier</h4>
       <p style="margin-bottom:14px; color:#555550; font-size:14px;">Using GPT-4o for large and mid tier, GPT-4o mini for small tier. Assumptions: ~150 input tokens and ~30 output tokens per minute for large agents; ~100 input and ~20 output for mid and small.</p>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+      <div class="tier-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px;">
           <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:10px;">Large — GPT-4o</div>
           <div style="font-size:13px; color:#555550; line-height:1.8;">Input: 150 tokens × $2.50/1M = $0.000375<br>Output: 30 tokens × $10.00/1M = $0.000300</div>
