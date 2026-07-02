@@ -78,12 +78,12 @@
       <div class="step">
         <div class="step-num"></div>
         <h4>Documents flow in automatically</h4>
-        <p>When a file is added or modified in Google Drive, an n8n pipeline triggers automatically. It extracts text, parses metadata from the filename (department, document type, time period), chunks the text into 500-token segments with 100-token overlap, embeds each chunk using OpenAI's <code>text-embedding-3-large</code>, and upserts to Pinecone with full metadata attached.</p>
+        <p>When a file is added or modified in Google Drive, an n8n pipeline triggers automatically. It extracts text, parses metadata from the filename (department, document type, time period), chunks the text into 2000-character segments with 400-character overlap, embeds each chunk using Cohere's <code>embed-english-v3.0</code>, and upserts to Pinecone with full metadata attached.</p>
       </div>
       <div class="step">
         <div class="step-num"></div>
         <h4>Queries get precise, cited answers</h4>
-        <p>A leadership query ("What was Q3 churn in Finance?") gets embedded, filtered by department/time period metadata, run through Pinecone similarity search (top 20), reranked by Cohere cross-encoder (top 5), assembled into a context block, and sent to GPT-4o with a strict citation-only system prompt. The answer includes inline source citations and a full sources list.</p>
+        <p>A leadership query ("What was Q3 churn in Finance?") gets embedded, filtered by department/time period metadata, run through Pinecone similarity search (top 10), reranked by Cohere cross-encoder (top 5), assembled into a context block, and sent to Llama 3.3 70B (via Groq) with a strict citation-only system prompt. The answer includes inline source citations and a full sources list.</p>
       </div>
       <div class="step">
         <div class="step-num"></div>
@@ -102,11 +102,11 @@
       </div>
       <div class="tradeoff-card">
         <h4>Two-stage retrieval</h4>
-        <p>Pinecone casts a wide net (top 20 by vector similarity). Cohere Rerank re-scores using a cross-encoder that reads query + chunk together — the #1 vector result is the true best answer only ~60% of the time without reranking.</p>
+        <p>Pinecone casts a wide net (top 10 by vector similarity). Cohere Rerank re-scores using a cross-encoder that reads query + chunk together — the #1 vector result is the true best answer only ~60% of the time without reranking.</p>
       </div>
       <div class="tradeoff-card">
         <h4>Citation-only generation</h4>
-        <p>GPT-4o is instructed never to use outside knowledge — only the retrieved chunks. If the documents don't contain the answer, it says so. This prevents confident-sounding hallucinations, which are more dangerous than a honest "I don't know."</p>
+        <p>Llama 3.3 70B is instructed never to use outside knowledge — only the retrieved chunks. If the documents don't contain the answer, it says so. This prevents confident-sounding hallucinations, which are more dangerous than an honest "I don't know."</p>
       </div>
       <div class="tradeoff-card">
         <h4>Filename-encoded metadata</h4>
@@ -126,21 +126,21 @@
       <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Vector DB</div>
         <div style="font-weight:600;">Pinecone</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:4px;">3072-dim cosine index, metadata-filtered similarity search</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">1024-dim cosine index, metadata-filtered similarity search</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Embeddings</div>
-        <div style="font-weight:600;">OpenAI text-embedding-3-large</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:4px;">3072-dimensional, best-in-class semantic quality</div>
+        <div style="font-weight:600;">Cohere embed-english-v3.0</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">1024-dimensional, optimised for document retrieval</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Reranking</div>
         <div style="font-weight:600;">Cohere rerank-english-v3.0</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Cross-encoder re-scores top 20, returns top 5</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">Cross-encoder re-scores top 10, returns top 5</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--orange); margin-bottom:6px;">Generation</div>
-        <div style="font-weight:600;">GPT-4o</div>
+        <div style="font-weight:600;">Llama 3.3 70B (Groq)</div>
         <div style="font-size:13px; color:var(--muted); margin-top:4px;">Citation-only system prompt, no outside knowledge</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:16px 20px;">
@@ -185,12 +185,12 @@
           <div class="step">
             <div class="step-num"></div>
             <h4>Recursive Text Splitter</h4>
-            <p>500-token chunks, 100-token overlap. Tries paragraph breaks → line breaks → sentence boundaries → words. Structure-aware for reports with headings; table-aware to avoid mid-row splits.</p>
+            <p>2000-character chunks, 400-character overlap. Tries paragraph breaks → line breaks → sentence boundaries → words. Structure-aware for reports with headings; table-aware to avoid mid-row splits.</p>
           </div>
           <div class="step">
             <div class="step-num"></div>
             <h4>Embed + Upsert</h4>
-            <p>Each chunk embedded with <code>text-embedding-3-large</code> (3072 dims). Upserted to Pinecone with full metadata: source file, department, time period, chunk index, raw text for citation.</p>
+            <p>Each chunk embedded with Cohere <code>embed-english-v3.0</code> (1024 dims). Upserted to Pinecone with full metadata: source file, department, time period, chunk index, raw text for citation.</p>
           </div>
         </div>
       </div>
@@ -212,17 +212,17 @@
           </div>
           <div class="step">
             <div class="step-num"></div>
-            <h4>Pinecone Search (top 20)</h4>
+            <h4>Pinecone Search (top 10)</h4>
             <p>Cosine similarity search against filtered vectors. Deliberately casts a wide net — precision comes from the reranker, not the retriever.</p>
           </div>
           <div class="step">
             <div class="step-num"></div>
             <h4>Cohere Rerank (top 5)</h4>
-            <p>Cross-encoder reads query + each of the 20 chunks together, producing a relevance score that reflects direct answerability — not just topical similarity. Chunks below 0.3 are discarded.</p>
+            <p>Cross-encoder reads query + each of the 10 chunks together, producing a relevance score that reflects direct answerability — not just topical similarity. Chunks below 0.3 are discarded.</p>
           </div>
           <div class="step">
             <div class="step-num"></div>
-            <h4>GPT-4o → Cited Answer</h4>
+            <h4>Llama 3.3 70B → Cited Answer</h4>
             <p>System prompt enforces citation-only generation. Answer includes inline <code>[SOURCE N]</code> references and a sources list. Every query is logged with scores, sources, and session ID.</p>
           </div>
         </div>
@@ -264,8 +264,8 @@
           <tr style="border-bottom:1px solid var(--border); background:var(--bg-card);">
             <td style="padding:10px 16px; font-weight:500;">Financial reports (prose)</td>
             <td style="padding:10px 16px; color:#555550;">Recursive</td>
-            <td style="padding:10px 16px; color:#555550;">500 tokens</td>
-            <td style="padding:10px 16px; color:#555550;">100</td>
+            <td style="padding:10px 16px; color:#555550;">2000 chars</td>
+            <td style="padding:10px 16px; color:#555550;">400 chars</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);">
             <td style="padding:10px 16px; font-weight:500;">Financial reports (tables)</td>
@@ -288,8 +288,8 @@
           <tr style="background:var(--bg-card);">
             <td style="padding:10px 16px; font-weight:500;">Churn / analytics reports</td>
             <td style="padding:10px 16px; color:#555550;">Recursive</td>
-            <td style="padding:10px 16px; color:#555550;">400 tokens</td>
-            <td style="padding:10px 16px; color:#555550;">80</td>
+            <td style="padding:10px 16px; color:#555550;">2000 chars</td>
+            <td style="padding:10px 16px; color:#555550;">400 chars</td>
           </tr>
         </tbody>
       </table>
