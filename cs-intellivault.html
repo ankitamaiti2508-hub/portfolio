@@ -161,74 +161,84 @@
     <p>IntelliVault is two separate n8n pipelines with a shared Pinecone index. Documents flow in through Pipeline 1; leadership queries flow through Pipeline 2. They never interact at runtime — the index is the shared state.</p>
   </div>
 
-  <div class="split-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;">
-
-    <div>
-      <div class="cs-section">
-        <div class="cs-section-label">Pipeline 1 — Document Ingestion</div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Google Drive Trigger</h4>
-            <p>Fires on file create or update. Watches the entire <code>IntelliVault/</code> folder tree, including sub-folders per department.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Extract Text</h4>
-            <p>Routes by file type — PDF extractor, DOCX binary reader, or plain text. Outputs a single <code>text</code> field.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Parse Metadata from Filename</h4>
-            <p>JavaScript node parses <code>Finance_FinancialReport_2024Q3_Name.pdf</code> → <code>department</code>, <code>document_type</code>, <code>time_period</code>. No manual tagging needed.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Recursive Text Splitter</h4>
-            <p>2000-character chunks, 400-character overlap. Tries paragraph breaks → line breaks → sentence boundaries → words. Structure-aware for reports with headings; table-aware to avoid mid-row splits.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Embed + Upsert</h4>
-            <p>Each chunk embedded with Cohere <code>embed-english-v3.0</code> (1024 dims). Upserted to Pinecone with full metadata: source file, department, time period, chunk index, raw text for citation.</p>
-          </div>
-        </div>
+  <!-- Pipeline 1 -->
+  <div class="cs-section">
+    <div class="cs-section-label">Pipeline 1 — Document Ingestion</div>
+    <div style="margin:16px 0 32px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f8f8f6;">
+      <img src="n8n-pipeline1-ingestion.png" alt="n8n ingestion pipeline workflow" style="width:100%; display:block;" />
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Google Drive Trigger</h4>
+        <p>Fires on file create or update. Watches the entire <code>IntelliVault/</code> folder tree, including sub-folders per department.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Download File → File Type Router</h4>
+        <p>Downloads the file as binary data, then routes by type — PDF goes to the PDF extractor, plain text files go to the text file extractor. Both output a single <code>text</code> field.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Parse Metadata from Filename</h4>
+        <p>JavaScript node parses <code>Finance_FinancialReport_2024Q3_Name.pdf</code> → <code>department</code>, <code>document_type</code>, <code>time_period</code>. No manual tagging needed.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Recursive Text Splitter</h4>
+        <p>2000-character chunks, 400-character overlap. Tries paragraph breaks → line breaks → sentence boundaries → words to preserve natural language structure.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Process in Batches → Prepare Vector Payloads</h4>
+        <p>Chunks are processed in a batch loop. Each chunk is packaged with its metadata into a vector payload ready for embedding.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Cohere Embed → Upsert to Pinecone</h4>
+        <p>Each chunk embedded with Cohere <code>embed-english-v3.0</code> (1024 dims) via the Cohere API. Upserted to Pinecone with full metadata: source file, department, time period, chunk index, and raw text for citation.</p>
       </div>
     </div>
+  </div>
 
-    <div>
-      <div class="cs-section">
-        <div class="cs-section-label">Pipeline 2 — Query & Answer</div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Webhook Trigger</h4>
-            <p>Receives <code>{ query, department?, time_period? }</code> via POST. The chat UI calls this endpoint directly.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Embed Query + Build Filter</h4>
-            <p>Query embedded with the same model. Optional metadata filter constructed: <code>{"department": {"$eq": "Finance"}, "time_period": {"$eq": "2024-Q3"}}</code>.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Pinecone Search (top 10)</h4>
-            <p>Cosine similarity search against filtered vectors. Deliberately casts a wide net — precision comes from the reranker, not the retriever.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Cohere Rerank (top 5)</h4>
-            <p>Cross-encoder reads query + each of the 10 chunks together, producing a relevance score that reflects direct answerability — not just topical similarity. Chunks below 0.3 are discarded.</p>
-          </div>
-          <div class="step">
-            <div class="step-num"></div>
-            <h4>Llama 3.3 70B → Cited Answer</h4>
-            <p>System prompt enforces citation-only generation. Answer includes inline <code>[SOURCE N]</code> references and a sources list. Every query is logged with scores, sources, and session ID.</p>
-          </div>
-        </div>
+  <!-- Pipeline 2 -->
+  <div class="cs-section">
+    <div class="cs-section-label">Pipeline 2 — Query & Answer</div>
+    <div style="margin:16px 0 32px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f8f8f6;">
+      <img src="n8n-pipeline2-query.png" alt="n8n query pipeline workflow" style="width:100%; display:block;" />
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Webhook Trigger</h4>
+        <p>Receives <code>{ query, department?, time_period? }</code> via POST. The chat UI calls this endpoint directly.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Pinecone Vector Store + Embeddings Cohere</h4>
+        <p>Query is embedded using Cohere (same model as ingestion) and passed to the Pinecone Vector Store node, which performs cosine similarity search and returns the top 10 most similar chunks.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Parse Results + Prepare Rerank</h4>
+        <p>Pinecone results are parsed and formatted into the structure expected by the Cohere Rerank API — each chunk paired with the original query.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Cohere Rerank</h4>
+        <p>Cross-encoder scores all 10 chunks against the query jointly, producing relevance scores that reflect direct answerability — not just topical similarity. Top 5 are kept; chunks below 0.3 are discarded.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Build Prompt → Llama 3.3 70B (Groq)</h4>
+        <p>Top 5 chunks are assembled into a context block with source labels. Groq runs Llama 3.3 70B with a citation-only system prompt — the model is instructed to use only the retrieved chunks and never outside knowledge.</p>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <h4>Format Final Response → Respond to Webhook</h4>
+        <p>Answer, inline citations, and source metadata are packaged into a JSON response and returned to the caller. Every query is logged with scores, sources, and session ID.</p>
       </div>
     </div>
-
   </div>
 
   <div class="cs-section">
